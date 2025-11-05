@@ -58,3 +58,23 @@ button{
 button:hover{
     background-color: #0b0b5e;
 }
+
+
+/* Exlusivo da tela de login */
+#mensagemErro {
+  color: #460202;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+  .login-box {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .login-box img {
+    width: 80px;
+  }
+}
