@@ -1,54 +1,56 @@
 <!DOCTYPE html>
-<html lang="pr-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Conta</title>
-    <link rel="stylesheet" href="criar_conta.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar Conta</title>
+  <link rel="stylesheet" href="criar_conta.css" />
 </head>
 <body>
-    <div class="box">
-        <form action="">
-            <fieldset>
-                <legend>Criar Conta</legend>
-                <div class="input_box">
-                    <input type="text" id="nome" name="nome" class="input_user" required>
-                    <label for="nome" class="label_input">Nome:</label>
-                </div>
-                <br>
-                <div class="input_box">
-                    <input type="text" id="cpf" name="cpf" class="input_user" required>
-                    <label for="cpf" class="label_input">CPF:</label>
-                </div>
-                <br>
-                <div class="input_box">
-                    <input type="text" id="email" name="email" class="input_user" required>
-                    <label for="email" class="label_input">Email:</label>
-                </div>
-                <br>
-                <div class="input_box">
-                    <input type="password" id="senha" name="senha" class="input_user" required>
-                    <label for="senha" class="label_input">Senha:</label>
-                </div>
-                <br>
-                <div class="input_box">
-                    <label for="data_nascimento"><b>Data de Nascimento:</b></label>
-                    <input type="date" id="data_nascimento" name="data_nascimento" id="data_nascimento" required>
-                </div>
-                <br>
-                <div class="input_box">
-                    <input type="tel" id="telefone" name="telefone" class="input_user" required>
-                    <label for="telefone" class="label_input">Telefone:</label>
-                </div>
-                <br>
-                <div class="input_box">
-                    <input type="text" id="endereco" name="endereco" class="input_user" required>
-                    <label for="endereco" class="label_input">Endereço:</label>
-                </div>
-                <br>
-                <input type="submit" id="submit" value="Criar Conta">
-            </fieldset>
-        </form>
-    </div>
+  <div class="box">
+    <form id="cadastroForm">
+      <fieldset>
+        <legend>Criar Conta</legend>
+
+        <div class="input_box">
+          <input type="text" id="nome" name="nome" class="input_user" required />
+          <label for="nome" class="label_input">Nome:</label>
+        </div>
+
+        <div class="input_box">
+          <input type="text" id="cpf" name="cpf" class="input_user" required />
+          <label for="cpf" class="label_input">CPF:</label>
+        </div>
+
+        <div class="input_box">
+          <input type="email" id="email" name="email" class="input_user" required />
+          <label for="email" class="label_input">Email:</label>
+        </div>
+
+        <div class="input_box">
+          <input type="password" id="senha" name="senha" class="input_user" required />
+          <label for="senha" class="label_input">Senha:</label>
+        </div>
+
+        <div class="input_box">
+          <label for="data_nascimento"><b>Data de Nascimento:</b></label>
+          <input type="date" id="data_nascimento" name="data_nascimento" required />
+        </div>
+
+        <div class="input_box">
+          <input type="tel" id="telefone" name="telefone" class="input_user" required />
+          <label for="telefone" class="label_input">Telefone:</label>
+        </div>
+
+        <div class="input_box">
+          <input type="text" id="endereco" name="endereco" class="input_user" required />
+          <label for="endereco" class="label_input">Endereço:</label>
+        </div>
+
+        <input type="submit" id="submit" value="Criar Conta" />
+      </fieldset>
+    </form>
+  </div>
+  <script src="cadastro.js"></script>
 </body>
 </html>
