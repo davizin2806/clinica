@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendar Consulta</title>
+    <link rel="stylesheet" href="agendar_consulta.css" /> 
+    <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="box">
+        <form id="formAgendarConsulta">
+            <fieldset>
+                <legend>Agendar Nova Consulta</legend>
+
+                <div class="input_box">
+                    <label for="especialidade">Selecione a especialidade:</label>
+                    <select id="especialidade" name="especialidade">
+                        <option value="">Escolha...</option>
+                        <option value="cardiologia">Cardiologia</option>
+                        <option value="dermatologia">Dermatologia</option>
+                        <option value="clinico_geral">Clínico Geral</option>
+                    </select>
+                </div>
+                
+                <div class="input_box">
+                    <label for="data_desejada"><b>Data Desejada:</b></label>
+                    <input type="date" id="data_desejada" name="data_desejada" required />
+                </div>
+
+                <div class="input_box" style="margin-top: 25px;">
+                    <label for="motivo" class="label_input">Motivo da Consulta / Sintomas:</label>
+                    <textarea id="motivo" name="motivo" rows="4" class="input_user" required></textarea>
+                </div>
+                
+                <input type="submit" class="btn-submit" value="Solicitar Agendamento" />
+
+                <a href="dashbord_paciente.html" class="btn-cancel">Cancelar e Voltar</a>
+
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>

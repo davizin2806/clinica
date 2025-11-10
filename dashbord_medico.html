@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Médico</title>
+    <link rel="stylesheet" href="medico.css">
+    <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-medico">
+            <img src="imagens/clinica.png" alt="Logo da Clínica" class="header-logo">
+            <h2>Área do Médico</h2> 
+            <button onclick="logout()" class="logout-button">Sair</button>
+        </div>
+        
+        <div class="content">
+            <h3>Bem-vindo, Dr(a). <span id="nomeMedico">[Nome]</span></h3>
+            <hr>
+
+            <section class="dashboard-section">
+                <h2>Minha Agenda de Atendimentos</h2>
+                <div id="lista-atendimentos-medico">
+                    <div class="card" style="text-align: left; margin-bottom: 10px;">
+                        <strong>Data:</strong> 10/11/2025 às 14:30<br>
+                        <strong>Paciente:</strong> Fulano da Silva<br>
+                        <strong>Observações:</strong> Paciente relatou dor de cabeça.
+                    </div>
+                    <div class="card" style="text-align: left; margin-bottom: 10px;">
+                        <strong>Data:</strong> 11/11/2025 às 09:00<br>
+                        <strong>Paciente:</strong> Ciclana de Souza<br>
+                        <strong>Observações:</strong> Exame de rotina.
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section" style="margin-top: 20px;">
+                <h2>Meus Pacientes</h2>
+                <input type="text" placeholder="Buscar paciente por nome ou CPF..." style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <div id="lista-pacientes">
+                    <div class="card" style="text-align: left; margin-bottom: 10px;">
+                        <strong>Nome:</strong> Fulano da Silva<br>
+                        <strong>Telefone:</strong> (11) 99999-8888
+                    </div>
+                </div>
+            </section>
+
+            <div class="content">
+            <section class="dashboard-section" style="margin-top: 20px;">
+                <h2>Iniciar Novo Atendimento</h2>
+                <p>Aqui o médico poderia selecionar um paciente...</p>
+                <button id="btn-novo-atendimento" class="submit" style="width: auto; padding: 10px 20px;">Novo Atendimento</button>
+            </section>
+            </div>
+
+        </div>
+    </div>
+    <script src="dashboard.js"></script>
+    </body>
+</html>
