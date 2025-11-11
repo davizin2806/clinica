@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastrar Novo Paciente</title>
+    <link rel="stylesheet" href="cadastrar_paciente.css" /> 
+    <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="box">
+        <form id="formCadastrarPaciente">
+            <fieldset>
+                <legend>Cadastrar Novo Paciente</legend>
+
+                <div class="input_box">
+                    <input type="text" id="nome" name="nome" class="input_user" required />
+                    <label for="nome" class="label_input">Nome Completo:</label>
+                </div>
+                <div class="input_box">
+                    <input type="text" id="cpf" name="cpf" class="input_user" required />
+                    <label for="cpf" class="label_input">CPF:</label>
+                </div>
+                <div class="input_box">
+                    <label for="convenio">
+                        Convênio do Paciente:
+                    </label>
+                    <select id="convenio" name="convenio">
+                        <option value="">Nenhum / Particular</option>
+                        <option value="1">Unimed</option>
+                        <option value="2">Bradesco Saúde</option>
+                    </select>
+                </div>
+
+                <input type="submit" class="btn-submit" value="Salvar Cadastro" />
+                <a href="dashbord_medico.html" class="btn-cancel">Cancelar e Voltar</a>
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>

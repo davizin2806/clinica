@@ -22,12 +22,12 @@
             <section class="dashboard-section">
                 <h2>Minha Agenda de Atendimentos</h2>
                 <div id="lista-atendimentos-medico">
-                    <div class="card" style="text-align: left; margin-bottom: 10px;">
+                    <div class="card">
                         <strong>Data:</strong> 10/11/2025 às 14:30<br>
                         <strong>Paciente:</strong> Fulano da Silva<br>
                         <strong>Observações:</strong> Paciente relatou dor de cabeça.
                     </div>
-                    <div class="card" style="text-align: left; margin-bottom: 10px;">
+                    <div class="card">
                         <strong>Data:</strong> 11/11/2025 às 09:00<br>
                         <strong>Paciente:</strong> Ciclana de Souza<br>
                         <strong>Observações:</strong> Exame de rotina.
@@ -35,11 +35,11 @@
                 </div>
             </section>
 
-            <section class="dashboard-section" style="margin-top: 20px;">
+            <section class="dashboard-section">
                 <h2>Meus Pacientes</h2>
-                <input type="text" placeholder="Buscar paciente por nome ou CPF..." style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" placeholder="Buscar paciente por nome ou CPF...">
                 <div id="lista-pacientes">
-                    <div class="card" style="text-align: left; margin-bottom: 10px;">
+                    <div class="card">
                         <strong>Nome:</strong> Fulano da Silva<br>
                         <strong>Telefone:</strong> (11) 99999-8888
                     </div>
@@ -47,12 +47,14 @@
             </section>
 
             <div class="content">
-            <section class="dashboard-section" style="margin-top: 20px;">
+            <section class="dashboard-section">
                 <h2>Iniciar Novo Atendimento</h2>
-                <button id="btn-novo-atendimento" class="submit" style="width: auto; padding: 10px 20px;">Novo Atendimento</button>
+                <button id="btn-novo-atendimento" class="submit">Novo Atendimento</button>
+                <button id="btn-cadastrar-paciente" class="btn-submit">
+                Cadastrar Novo Paciente
+                </button>
             </section>
             </div>
-
         </div>
     </div>
     <script src="dashboard.js"></script>

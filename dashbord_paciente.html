@@ -36,7 +36,7 @@
             </section>
 
             <section class="dashboard-section">
-                <h2>Atendimentos em Aberto</h2>
+                <h2>Próximos Atendimentos</h2>
                 <div id="lista-atendimentos-paciente">
                     <div class="card-paciente">
                         <strong>Data:</strong> 10/11/2025
@@ -46,9 +46,14 @@
                         <strong>Observações:</strong> Paciente relatou dor de cabeça.
                         <br>
                         <br>
-                        <button id="btn-agendar-consulta" class="btn-submit">
-                        Agendar Nova Consulta
-                        </button>
+                        <section class="acoes-rapidas">
+                            <button id="btn-agendar-consulta" class="btn-submit">
+                                Agendar Nova Consulta
+                            </button>
+                            <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">
+                                Ver Histórico de Atendimentos
+                            </button>
+                        </section>
                     </div>
                 </div>
             </section>
@@ -60,7 +65,7 @@
                     <p><strong>CPF:</strong> [xxx.xxx.xxx-xx]</p>
                     <p><strong>Email:</strong> [paciente@email.com]</p>
                     <p><strong>Endereço:</strong> [Rua dos Testes, 123, Bairro, Cidade - ES, CEP 29000-000]</p>
-                    <div id="dados-pessoais" style="padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                    <p><strong>Convênio:</strong> <span id="nomeConvenio">[Nome do Convênio ou "Particular"]</span></p>
                     <button id="btn-alterar-dados" class="submit">Alterar Dados</button>
                 </div>
             </section>

@@ -1,56 +1,68 @@
-// Arquivo: dashboard.js
+// Arquivo: dashboard.js (Versão Completa)
 
-/* * Função de Logout (funciona 100% agora)
+/* * Função de Logout (desconectar)
  * Limpa o 'login' salvo no navegador e volta para a tela de login.
  */
 function logout() {
-    // Limpa o 'tipo_usuario' que salvamos no localStorage durante o login
-    localStorage.removeItem('tipo_usuario');
-    localStorage.removeItem('nome_usuario');
-    // Você pode usar localStorage.clear(); para limpar tudo
-    
+    localStorage.clear(); // Limpa tudo salvo (tipo_usuario, nome, etc.)
     alert('Você foi desconectado.');
     window.location.href = 'index.html'; // Redireciona para o login
 }
 
-/* * Adiciona os 'escutadores' de clique aos botões
+/* * Adiciona os 'escutadores' de clique (event listeners)
  * Isso espera o HTML carregar e depois "ativa" os botões.
  */
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- BOTÕES COMUNS (presentes nas duas telas) ---
-    
+    // --- BOTÃO DE SAIR (LOGOUT) ---
+    // Procura todos os botões com a classe 'logout-button'
     const botoesSair = document.querySelectorAll('.logout-button');
     botoesSair.forEach(botao => {
-        // Quando qualquer botão com a classe 'logout-button' for clicado, chama a função logout()
-        botao.addEventListener('click', logout);
+        // Remove o 'onclick' do HTML e usa este JS
+        botao.removeAttribute('onclick'); 
+        botao.addEventListener('click', logout); // Ativa o botão de sair
     });
 
-    // --- BOTÕES ESPECÍFICOS ---
-
-    // 1. Botão do Paciente: Alterar Dados
+    // --- BOTÃO 1: ALTERAR DADOS (Paciente) ---
     const btnAlterarDados = document.getElementById('btn-alterar-dados');
-    if (btnAlterarDados) { // Só executa se o botão existir na página
+    if (btnAlterarDados) { 
         btnAlterarDados.addEventListener('click', function() {
-            //alert('Navegando para a página de edição de dados...');
             window.location.href = 'editar_paciente.html';
         });
     }
 
-    // 2. Botão do Médico: Novo Atendimento
-    const btnNovoAtendimento = document.getElementById('btn-novo-atendimento');
-    if (btnNovoAtendimento) { // Só executa se o botão existir na página
-        btnNovoAtendimento.addEventListener('click', function() {
-            //alert('Navegando para a tela de novo atendimento...');
-            window.location.href = 'novo_atendimento.html';
-        });
-    }
-
-    // 3. Botão do Paciente: Agendar Nova Consulta
+    // --- BOTÃO 2: AGENDAR CONSULTA (Paciente) ---
     const btnAgendarConsulta = document.getElementById('btn-agendar-consulta');
-    if (btnAgendarConsulta) { // Só executa se o botão existir na página
+    if (btnAgendarConsulta) {
         btnAgendarConsulta.addEventListener('click', function() {
             window.location.href = 'agendar_consulta.html';
         });
     }
+
+    // --- BOTÃO 3: VER HISTÓRICO (Paciente) ---
+    const btnVerHistorico = document.getElementById('btn-ver-historico');
+    if (btnVerHistorico) {
+        btnVerHistorico.addEventListener('click', function() {
+            // Redireciona para a nova página de histórico
+            window.location.href = 'historico_atendimentos.html';
+        });
+    }
+
+    // --- BOTÃO 4: NOVO ATENDIMENTO (Médico) ---
+    const btnNovoAtendimento = document.getElementById('btn-novo-atendimento');
+    if (btnNovoAtendimento) { 
+        btnNovoAtendimento.addEventListener('click', function() {
+            window.location.href = 'novo_atendimento.html';
+        });
+    }
+
+    // ... (dentro do addEventListener 'DOMContentLoaded') ...
+
+    const btnCadastrarPaciente = document.getElementById('btn-cadastrar-paciente');
+    if (btnCadastrarPaciente) {
+        btnCadastrarPaciente.addEventListener('click', function() {
+            window.location.href = 'cadastrar_paciente.html';
+    });
+}
+
 });
