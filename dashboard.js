@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         botao.addEventListener('click', logout); // Ativa o botão de sair
     });
 
-    // --- BOTÃO 1: ALTERAR DADOS (Paciente) ---
+    // --- BOTÃO 1: ALTERAR DADOS ---
     const btnAlterarDados = document.getElementById('btn-alterar-dados');
     if (btnAlterarDados) { 
         btnAlterarDados.addEventListener('click', function() {
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- BOTÃO 2: AGENDAR CONSULTA (Paciente) ---
+    // --- BOTÃO 2: AGENDAR CONSULTA ---
     const btnAgendarConsulta = document.getElementById('btn-agendar-consulta');
     if (btnAgendarConsulta) {
         btnAgendarConsulta.addEventListener('click', function() {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- BOTÃO 3: VER HISTÓRICO (Paciente) ---
+    // --- BOTÃO 3: VER HISTÓRICO ---
     const btnVerHistorico = document.getElementById('btn-ver-historico');
     if (btnVerHistorico) {
         btnVerHistorico.addEventListener('click', function() {
@@ -47,22 +47,5 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'historico_atendimentos.html';
         });
     }
-
-    // --- BOTÃO 4: NOVO ATENDIMENTO (Médico) ---
-    const btnNovoAtendimento = document.getElementById('btn-novo-atendimento');
-    if (btnNovoAtendimento) { 
-        btnNovoAtendimento.addEventListener('click', function() {
-            window.location.href = 'novo_atendimento.html';
-        });
-    }
-
-    // ... (dentro do addEventListener 'DOMContentLoaded') ...
-
-    const btnCadastrarPaciente = document.getElementById('btn-cadastrar-paciente');
-    if (btnCadastrarPaciente) {
-        btnCadastrarPaciente.addEventListener('click', function() {
-            window.location.href = 'cadastrar_paciente.html';
-    });
 }
-
-});
+);
