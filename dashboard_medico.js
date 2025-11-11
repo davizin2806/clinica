@@ -30,6 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
         btnCadastrarPaciente.addEventListener('click', function() {
             window.location.href = 'cadastrar_paciente.html';
     });
+
+    const btnHistoricoMedico = document.getElementById('btn-historico-medico');
+    if (btnHistoricoMedico) {
+        btnHistoricoMedico.addEventListener('click', function() {
+            window.location.href = 'historico_medico.html';
+        });
+    }
 }
 
 });

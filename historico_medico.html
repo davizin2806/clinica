@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Atendimentos</title>
+    <link rel="stylesheet" href="historico_medico.css"> 
+    <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-medico">
+            <h2>Meu Histórico de Atendimentos</h2>
+            <a href="dashbord_medico.html" style="color: white; text-decoration: none; font-weight: bold;">Voltar</a>
+        </div>
+        
+        <div class="content">
+            <p>Aqui está uma lista de todos os atendimentos que você já realizou, do mais recente para o mais antigo.</p>
+            <div id="lista-historico-medico">
+        <!-- Atendimento com pagamento pendente -->
+        <div class="card-atendimento pendente">
+            <strong>Data:</strong> 10/11/2025<br>
+            <strong>Paciente:</strong> Carlos Pereira (CPF: 111.222.333-44)<br>
+            <strong>Observações:</strong> Paciente relatou dores no peito.<br>
+            <strong>Exames Solicitados:</strong> Eletrocardiograma.
+        </div>
+        
+        <!-- Atendimento com pagamento realizado -->
+        <div class="card-atendimento pago">
+            <strong>Data:</strong> 05/10/2025<br>
+            <strong>Paciente:</strong> Ana Costa (CPF: 987.654.321-00)<br>
+            <strong>Observações:</strong> Check-up anual.<br>
+            <strong>Exames Solicitados:</strong> Hemograma Completo.
+        </div>
+    </div>
+</body>
+</html>

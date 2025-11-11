@@ -39,6 +39,18 @@ body {
     margin-right: -500px; /* Adiciona um espaço entre a logo e o título */
 }
 
+.acoes-rapidas {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.acoes-rapidas .submit {
+    width: auto; 
+    padding: 12px 20px; 
+}
+
 /* Estilo geral para botões */
 button {
     padding: 10px 15px;
