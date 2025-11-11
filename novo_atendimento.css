@@ -135,6 +135,14 @@ textarea {
   background-image: linear-gradient(to right, rgb(44, 80, 121), rgb(17, 28, 129));
 }
 
+#valor-consulta {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Para o padding não "estourar" a largura */
+    }
+
 /* ====== RESPONSIVIDADE ====== */
 @media (max-width: 768px) {
   .dashboard-container {
