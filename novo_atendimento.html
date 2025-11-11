@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo Atendimento</title>
-    <link rel="stylesheet" href="novo_at.css">
-    <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo Atendimento</title>
+  <link rel="stylesheet" href="novo_atendimento.css">
+  <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="header-medico">
-            <h2>Novo Atendimento</h2>
-            <a href="dashbord_medico.html" class="cancelar">Cancelar e Voltar</a>
-        </div>
-        
-        <div class="content">
-            <h3>Registro de Atendimento</h3>
-            <hr>
+  <div class="dashboard-container">
+    <div class="header-medico">
+      <h2>Novo Atendimento</h2>
+      <a href="dashbord_medico.html" class="cancelar">Cancelar e Voltar</a>
+    </div>
 
-            <label for="select-paciente">Selecionar Paciente:</label>
-            <input type_text list="pacientes" id="select-paciente" placeholder="Digite o nome do paciente...">
-            <datalist id="pacientes">
-                <option value="Fulano da Silva">
-                <option value="Ciclana de Souza">
-            </datalist>
+    <div class="content">
+      <h3>Registro de Atendimento</h3>
+      <hr>
 
-            <label for="obs-atendimento">Observações da Consulta:</label>
-            <textarea id="obs-atendimento" rows="5" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-            
-            <h3 style="margin-top: 20px;">Solicitar Exames</h3>
-            <div id="lista-exames-disponiveis">
-                <input type="checkbox" id="ex1" name="exame1" value="hemograma">
-                <label for="ex1"> Hemograma Completo</label><br>
-                <input type="checkbox" id="ex2" name="exame2" value="raiox">
-                <label for="ex2"> Raio-X do Tórax</label><br>
-            </div>
-                <button class="btn-submit" style="margin-top: 20px;">Salvar Atendimento</button>
-            </div>
-    </div>
+      <!-- Seleção de Paciente -->
+      <label for="busca-paciente">Buscar Paciente (CPF ou Nome Completo):</label>
+      <div class="busca-container">
+        <input type="text" id="busca-paciente" placeholder="Digite o CPF ou nome do paciente...">
+        <button id="btn-buscar">Buscar</button>
+      </div>
+      <p id="status-busca" class="status"></p>
+
+      <!-- Campo de Observações -->
+      <label for="obs-atendimento">Observações da Consulta:</label>
+      <textarea id="obs-atendimento" rows="5"></textarea>
+
+      <!-- Solicitação de exames -->
+      <h3>Solicitar Exames</h3>
+      <div id="lista-exames-disponiveis" class="lista-exames">
+        <label><input type="checkbox" value="Hemograma Completo"> Hemograma Completo</label>
+        <label><input type="checkbox" value="Raio-X do Tórax"> Raio-X do Tórax</label>
+        <label><input type="checkbox" value="Ultrassonografia"> Ultrassonografia</label>
+      </div>
+
+      <button class="btn-submit" id="salvar-atendimento">Salvar Atendimento</button>
+    </div>
+  </div>
+
+  <script src="novo_atendimento.js"></script>
 </body>
 </html>
