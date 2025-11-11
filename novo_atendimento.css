@@ -135,6 +135,11 @@ textarea {
   background-image: linear-gradient(to right, rgb(44, 80, 121), rgb(17, 28, 129));
 }
 
+h3 #valor-total {
+    color: #28a745; /* Verde para destacar o total */
+    font-weight: bold;
+}
+
 #valor-consulta {
         width: 100%;
         padding: 10px;

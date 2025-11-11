@@ -28,16 +28,29 @@
             <label for="obs-atendimento">Observações da Consulta:</label>
       <textarea id="obs-atendimento" rows="5"></textarea>
 
-      <div style="margin-top: 20px;">
+      <div>
         <label for="valor-consulta">Valor da Consulta (R$):</label>
         <input type="number" id="valor-consulta" min="0" step="0.01" placeholder="Ex: 150.00">
       </div>
-                  <h3 style="margin-top: 20px;">Solicitar Exames</h3>
-      <div id="lista-exames-disponiveis" class="lista-exames">
-        <label><input type="checkbox" value="Hemograma Completo"> Hemograma Completo</label>
-        <label><input type="checkbox" value="Raio-X do Tórax"> Raio-X do Tórax</label>
-        <label><input type="checkbox" value="Ultrassonografia"> Ultrassonografia</label>
-      </div>
+      <h3>Solicitar Exames</h3>
+      <div id="lista-exames-disponiveis" class="lista-exames">
+          
+          <label>
+              <input type="checkbox" data-id-exame="1" data-preco-padrao="100.00"> 
+              Hemograma Completo
+              <span class="preco-exame"> (Padrão: R$ 100.00)</span>
+          </label>
+          
+          <label>
+              <input type="checkbox" data-id-exame="2" data-preco-padrao="150.00"> 
+              Raio-X do Tórax
+              <span class="preco-exame"> (Padrão: R$ 150.00)</span>
+          </label>
+          
+      </div>
+
+      <hr>
+      <h3>Total (Consulta + Exames): <span id="valor-total">R$ 0.00</span></h3>
 
       <button class="btn-submit" id="salvar-atendimento">Salvar Atendimento</button>
     </div>
