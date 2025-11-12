@@ -15,6 +15,6 @@ Agora a segunda parte do projeto busca criar de fato o sistema, com a criação 
 - [Fabricio Nascimento](https://github.com/fab027)
 - [Mateus Fonseca](https://github.com/fonsca)
 - [Talita Canedo](https://github.com/TalitaCFederici)
-- [Yago Van Der Maas](https://github.com)
+- [Yago Van Der Maas](https://github.com/yago-vandermaas)
 
 
