@@ -376,6 +376,22 @@ def relatorio_ficha_atendimentos(id_paciente):
         cursor.close()
         conn.close()
 
+# ... (adicionar junto com as outras rotas) ...
+
+@app.route('/api/relatorios/historico_medico/<int:id_medico>', methods=['GET'])
+def relatorio_historico_medico(id_medico):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        cursor.execute("EXEC sp_Relatorio_HistoricoPorMedico @id_medico=?", (id_medico,))
+        dados = rows_to_dict_list(cursor)
+        return jsonify(dados), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 # --- 8. Rodar o servidor ---
 if __name__ == '__main__':

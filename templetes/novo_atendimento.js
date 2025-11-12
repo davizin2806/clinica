@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const divListaExames = document.getElementById('lista-exames-disponiveis');
     const spanTotal = document.getElementById('valor-total');
     
-    let pacienteEncontrado = null; // Armazena o objeto do paciente
+    let pacienteEncontrado = null; // Armazena o objeto COMPLETO do paciente
     let medicoId = localStorage.getItem('medico_id'); // Pega o ID do médico logado
 
     // --- 2. Carregar Exames Disponíveis (da API) ---
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
             divListaExames.innerHTML = ''; // Limpa "Carregando..."
             data.forEach(exame => {
                 const label = document.createElement('label');
-                // Salva o ID e o Preço no 'dataset' do checkbox
                 label.innerHTML = `
                     <input type="checkbox" data-id-exame="${exame.id_exame}" data-preco-padrao="${exame.preco_padrao}"> 
                     ${exame.nome}
@@ -44,11 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
         total += valorConsulta;
 
         const todosExames = divListaExames.querySelectorAll('input[type="checkbox"]');
-
         todosExames.forEach(checkbox => {
             if (checkbox.checked) {
-                // Em um sistema real, o backend calcularia o desconto.
-                // Por agora, vamos apenas somar o preço padrão.
+                // (O cálculo de desconto real é feito no backend pela SP)
                 const precoPadrao = parseFloat(checkbox.dataset.precoPadrao);
                 total += precoPadrao;
             }
@@ -58,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- 4. Lógica de Busca de Paciente (com API) ---
     btnBuscar.addEventListener("click", () => {
-        const termo = inputBusca.value.trim();
+        const termo = inputBusca.value.trim(); // CPF
         if (!termo) {
              statusBusca.textContent = "Digite o CPF do paciente.";
              statusBusca.className = "status erro";
@@ -69,19 +66,15 @@ document.addEventListener("DOMContentLoaded", () => {
         statusBusca.textContent = "Buscando...";
         statusBusca.className = "status";
         
-        // Busca na API pelo CPF
         fetch(API_URL + '/api/pacientes/cpf/' + termo)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Paciente não encontrado');
-                }
+                if (!response.ok) throw new Error('Paciente não encontrado');
                 return response.json();
             })
             .then(paciente => {
                 pacienteEncontrado = paciente; // Salva o objeto do paciente
                 statusBusca.textContent = `Paciente encontrado: ${paciente.nome}`;
                 statusBusca.className = "status ok";
-                // (A lógica de desconto real seria mais complexa)
                 recalcularTotalGeral();
             })
             .catch(error => {
