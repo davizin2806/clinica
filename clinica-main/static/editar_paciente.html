@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Meus Dados</title>
+    <link rel="stylesheet" href="../templetes/editar_paciente.css" /> 
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    
+    <div class="box">
+        <form id="formEditarPaciente">
+            <fieldset>
+                <legend>Editar Meus Dados</legend>
+                <p style="text-align: center;">(Aqui o backend preencheria seus dados atuais)</p>
+
+                <div class="input_box">
+                    <input type="text" id="nome" name="nome" class="input_user" required/>
+                    <label for="nome" class="label_input">Nome:</label>
+                </div>
+                <div class="input_box">
+                    <input type="tel" id="telefone" name="telefone" class="input_user" required/>
+                    <label for="telefone" class="label_input">Telefone:</label>
+                </div>
+                <div class="input_box">
+                    <input type="text" id="endereco" name="endereco" class="input_user" required/>
+                    <label for="endereco" class="label_input">Endereço:</label>
+                </div>
+                
+                <input type="submit" class="btn-submit" value="Salvar Alterações" />
+                <a href="dashbord_paciente.html" class="cancelar">Cancelar e Voltar</a>
+            </fieldset>
+        </form>
+    </div>
+
+</body>
+</html>
