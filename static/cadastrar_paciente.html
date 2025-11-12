@@ -104,12 +104,12 @@
             };
 
             // 4. Envia os dados para a API Python (Flask)
-            fetch('http://192.168.1.14:5000/api/cadastrar_paciente', {
+            fetch('http://192.168.0.80:5000/api/cadastrar_paciente', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dadosParaEnviar) // Converte o objeto JS em texto JSON
+                headers: 
+                    { 'Content-Type': 'application/json' },
+                
+                body: JSON.stringify(dadosParaEnviar)
             })
             .then(response => response.json()) // Pega a resposta da API
             .then(data => {
