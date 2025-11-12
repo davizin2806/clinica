@@ -115,5 +115,5 @@ def rota_cadastrar_paciente():
 
 # --- 4. Roda o Servidor Flask ---
 if __name__ == '__main__':
-    # Roda a API na porta 5000 (http://127.0.0.1:5000)
-    app.run(debug=True, port=5000)
+    # host='0.0.0.0' significa "aceitar conexões de qualquer IP"
+    app.run(host='0.0.0.0', port=5000, debug=True)
