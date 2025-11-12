@@ -1,0 +1,91 @@
+/* Estilos para a página de Histórico de Atendimentos, baseados no paciente.css */
+
+/* Estilos base */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    min-height: 100vh; /* Garante que o body ocupe pelo menos 100% da altura da tela */
+    display: flex; /* Usa flexbox para alinhar o conteúdo */
+    flex-direction: column; /* Empilha os itens verticalmente */
+    box-sizing: border-box; /* Garante que o padding não adicione altura extra */
+}
+
+/* Container principal */
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto; /* Mantém centralizado horizontalmente */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    flex-grow: 1; /* Faz o container crescer para ocupar o espaço vertical disponível */
+}
+
+/* Cabeçalho do paciente */
+.header-paciente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #28a745; /* Verde para a área do paciente */
+    margin-bottom: 20px;
+}
+
+.header-paciente h2 {
+    color: #28a745;
+    margin: 0;
+}
+
+/* Estilo para o botão 'Voltar' (link <a>) */
+.header-paciente a {
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: #007bff; /* Cor azul solicitada */
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.header-paciente a:hover {
+    background-color: #0056b3; /* Azul mais forte no hover */
+}
+
+/* Conteúdo e cards */
+.content {
+    padding: 0 10px;
+}
+
+.card-paciente {
+    background-color: #c0cedb;
+    border-left: 5px solid #28a745; /* Destaque verde */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .header-paciente {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-paciente h2 {
+        margin-bottom: 15px;
+    }
+
+    .header-paciente a {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+}

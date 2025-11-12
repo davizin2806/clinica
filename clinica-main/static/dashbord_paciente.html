@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Paciente</title>
+    <link rel="stylesheet" href="../templetes/paciente.css">
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-paciente">
+            <img src="../imagens/clinica.png" alt="Logo da Clínica" class="header-logo">
+            <h2>Minha Saúde</h2>
+            <button class="logout-button">Sair</button>
+        </div>
+        
+        <div class="content">
+            <h3>Olá, <span id="nomePaciente">[Carregando...]</span></h3>
+            <hr>
+
+            <section class="dashboard-section">
+                <h2>Meus Exames Realizados</h2>
+                <div id="lista-exames">
+                    <p>Carregando exames...</p> </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Próximos Atendimentos</h2>
+                <div id="lista-atendimentos-paciente">
+                    <p>Carregando atendimentos...</p> </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Meus Dados Pessoais</h2>
+                <div id="dados-pessoais">
+                    <p>Carregando dados...</p> </div>
+            </section>
+        </div>
+    </div>
+    
+    <script src="../templetes/dashboard.js"></script> <script>
+        const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const pacienteId = localStorage.getItem('paciente_id');
+            const pacienteNome = localStorage.getItem('usuario_nome');
+            
+            if (pacienteNome) {
+                document.getElementById('nomePaciente').textContent = pacienteNome;
+            } else {
+                document.getElementById('nomePaciente').textContent = 'Paciente';
+            }
+
+            if (!pacienteId) {
+                alert('Erro: Paciente não identificado. Faça o login.');
+                window.location.href = '../index.html'; // Volta pro login
+                return;
+            }
+
+            // --- 1. Buscar Exames do Paciente ---
+            const containerExames = document.getElementById('lista-exames');
+            fetch(`${API_URL}/api/relatorios/ficha_exames/${pacienteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    containerExames.innerHTML = ''; // Limpa o "Carregando..."
+                    if (data.length === 0) {
+                        containerExames.innerHTML = '<p>Nenhum exame encontrado.</p>';
+                        return;
+                    }
+                    data.forEach(exame => {
+                        const card = document.createElement('div');
+                        card.className = 'card-paciente';
+                        const dataFormatada = new Date(exame.data_realizacao).toLocaleDateString('pt-BR');
+                        const valorFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(exame.ValorCobrado);
+                        card.innerHTML = `
+                            <strong>Exame:</strong> ${exame.NomeExame}<br>
+                            <strong>Realizado em:</strong> ${dataFormatada}<br>
+                            <strong>Valor Final:</strong> ${valorFormatado}
+                        `;
+                        containerExames.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar exames:', error);
+                    containerExames.innerHTML = '<p>Erro ao carregar exames.</p>';
+                });
+
+            // --- 2. Buscar Atendimentos do Paciente ---
+            const containerAtendimentos = document.getElementById('lista-atendimentos-paciente');
+            fetch(`${API_URL}/api/relatorios/ficha_atendimentos/${pacienteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    containerAtendimentos.innerHTML = ''; // Limpa o "Carregando..."
+                    if (data.length === 0) {
+                        containerAtendimentos.innerHTML = '<p>Nenhum atendimento encontrado.</p>';
+                    }
+                    data.forEach(atendimento => {
+                        const card = document.createElement('div');
+                        card.className = 'card-paciente';
+                        const dataFormatada = new Date(atendimento.data_atendimento).toLocaleString('pt-BR');
+                        card.innerHTML = `
+                            <strong>Data:</strong> ${dataFormatada}<br>
+                            <strong>Médico:</strong> ${atendimento.NomeMedico} [${atendimento.Especialidade}]<br>
+                            <strong>Observações:</strong> ${atendimento.observacoes}
+                        `;
+                        containerAtendimentos.appendChild(card);
+                    });
+                    
+                    // Adiciona os botões de ação (do seu HTML original)
+                    const acoes = document.createElement('section');
+                    acoes.className = 'acoes-rapidas';
+                    acoes.innerHTML = `
+                        <button id="btn-agendar-consulta" class="btn-submit">Agendar Nova Consulta</button>
+                        <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">Ver Histórico</button>
+                    `;
+                    containerAtendimentos.appendChild(acoes);
+                    // Re-ativa os botões do dashboard.js
+                    document.getElementById('btn-agendar-consulta').addEventListener('click', () => window.location.href = 'agendar_consulta.html');
+                    document.getElementById('btn-ver-historico').addEventListener('click', () => window.location.href = 'historico_atendimentos.html');
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar atendimentos:', error);
+                    containerAtendimentos.innerHTML = '<p>Erro ao carregar atendimentos.</p>';
+                });
+
+            // --- 3. Buscar Dados Pessoais do Paciente ---
+            const containerDados = document.getElementById('dados-pessoais');
+            fetch(`${API_URL}/api/pacientes/${pacienteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    containerDados.innerHTML = `
+                        <p><strong>Nome:</strong> ${data.nome}</p>
+                        <p><strong>CPF:</strong> ${data.cpf}</p>
+                        <p><strong>Email:</strong> ${data.email || 'Não informado'}</p>
+                        <p><strong>Endereço:</strong> ${data.logradouro}, ${data.numero} - ${data.bairro}, ${data.cidade} - ${data.estado}</p>
+                        <p><strong>Convênio:</strong> <span id="nomeConvenio">[Carregando...]</span></p>
+                        <button id="btn-alterar-dados" class="submit">Alterar Dados</button>
+                    `;
+                    // Re-ativa o botão do dashboard.js
+                    document.getElementById('btn-alterar-dados').addEventListener('click', () => window.location.href = 'editar_paciente.html');
+                    
+                    if (data.id_convenio) {
+                        fetch(`${API_URL}/api/convenios`)
+                            .then(res => res.json())
+                            .then(convenios => {
+                                const convenio = convenios.find(c => c.id_convenio === data.id_convenio);
+                                document.getElementById('nomeConvenio').textContent = convenio ? convenio.nome : 'Particular';
+                            });
+                    } else {
+                        document.getElementById('nomeConvenio').textContent = 'Particular';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar dados do paciente:', error);
+                    containerDados.innerHTML = '<p>Erro ao carregar dados pessoais.</p>';
+                });
+
+            // Ativa o botão de logout
+            document.querySelector('.logout-button').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+</body>
+</html>
