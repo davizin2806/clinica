@@ -36,7 +36,8 @@ body {
 
 .header-logo {
     height: 100px; /* Ajusta a altura da imagem */
-    margin-right: -500px; /* Adiciona um espaço entre a logo e o título */
+    margin-right: -250px; /* Adiciona um espaço entre a logo e o título */
+    margin-left: -150px;
 }
 
 .acoes-rapidas {
@@ -49,6 +50,17 @@ body {
 .acoes-rapidas .submit {
     width: auto; 
     padding: 12px 20px; 
+}
+
+.acoes-rapidas {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap; 
+}
+.acoes-rapidas .submit {
+    width: auto;
+    padding: 12px 20px;
 }
 
 /* Estilo geral para botões */
@@ -89,9 +101,8 @@ input[type="text"] {
 }
 
 .dashboard-section{
-    padding: 20px; 
+    padding: 20px 20px 0px 20px; 
     border-radius: 8px; 
-    margin-bottom: 20px;
 }
 
 /* Seções do painel */

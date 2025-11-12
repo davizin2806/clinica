@@ -9,54 +9,50 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <div class="header-medico">
-            <img src="../imagens/clinica.png" alt="Logo da Clínica" class="header-logo">
-            <h2>Área do Médico</h2> 
-            <button onclick="logout()" class="logout-button">Sair</button>
-        </div>
-        
-        <div class="content">
-            <h3>Bem-vindo, Dr(a). <span id="nomeMedico">[Nome do médico]</span></h3>
-            <hr>
-
-            <section class="dashboard-section">
-                <h2>Minha Agenda de Atendimentos</h2>
-                <div id="lista-atendimentos-medico">
-                    <div class="card">
-                        <strong>Data:</strong> 10/11/2025 às 14:30<br>
-                        <strong>Paciente:</strong> Fulano da Silva<br>
-                        <strong>Observações:</strong> Paciente relatou dor de cabeça.
-                    </div>
-                    <div class="card">
-                        <strong>Data:</strong> 11/11/2025 às 09:00<br>
-                        <strong>Paciente:</strong> Ciclana de Souza<br>
-                        <strong>Observações:</strong> Exame de rotina.
-                    </div>
-                </div>
-            </section>
-
-            <section class="dashboard-section">
-                <h2>Meus Pacientes</h2>
-                <input type="text" placeholder="Buscar paciente por nome ou CPF...">
-                <div id="lista-pacientes">
-                    <div class="card">
-                        <strong>Nome:</strong> Fulano da Silva<br>
-                        <strong>Telefone:</strong> (11) 99999-8888
-                    </div>
-                </div>
-            </section>
-
-            <div class="content">
-            <section class="dashboard-section">
-                <h2>Iniciar Novo Atendimento</h2>
+        <div class="header-medico">
+            <img src="../imagens/clinica.png" alt="Logo da Clínica" class="header-logo">
+            <h2>Área do Médico</h2> 
+            <button onclick="logout()" class="logout-button">Sair</button>
+        </div>       
+        <div class="content">
+            <h3>Bem-vindo, Dr(a). <span id="nomeMedico">[Nome do médico]</span></h3>
+            <hr>
+            <section class="dashboard-section acoes-rapidas">
                 <button id="btn-novo-atendimento" class="submit">Novo Atendimento</button>
-                <button id="btn-cadastrar-paciente" class="btn-submit">
+                <button id="btn-cadastrar-paciente" class="submit">
                 Cadastrar Novo Paciente
                 </button>
+                <button id="btn-historico-medico" class="submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">
+                    Ver Histórico Completo
+                </button>
             </section>
-            </div>
-        </div>
-    </div>
+            <section class="dashboard-section">
+                <h2>Minha Agenda de Atendimentos</h2>
+                <div id="lista-atendimentos-medico">
+                    <div class="card">
+                        <strong>Data:</strong> 10/11/2025 às 14:30<br>
+                        <strong>Paciente:</strong> Fulano da Silva<br>
+                        <strong>Observações:</strong> Paciente relatou dor de cabeça.
+                    </div>
+                    <div class="card">
+                        <strong>Data:</strong> 11/11/2025 às 09:00<br>
+                        <strong>Paciente:</strong> Ciclana de Souza<br>
+                        <strong>Observações:</strong> Exame de rotina.
+                    </div>
+                </div>
+            </section>
+            <section class="dashboard-section">
+                <h2>Meus Pacientes</h2>
+                <input type="text" placeholder="Buscar paciente por nome ou CPF...">
+                <div id="lista-pacientes">
+                    <div class="card">
+                        <strong>Nome:</strong> Fulano da Silva<br>
+                        <strong>Telefone:</strong> (11) 99999-8888
+                    </div>
+                </div>
+            </section>                    
+        </div>
+    </div>
     <script src="../templetes/dashboard_medico.js"></script>
     </body>
 </html>

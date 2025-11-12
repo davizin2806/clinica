@@ -24,6 +24,30 @@ body {
     flex-grow: 1;
 }
 
+.filtros-container {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.filtros-container h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+.filtro-grupo {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.filtro-grupo label {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
 /* Cabeçalho do médico */
 .header-medico {
     display: flex;
