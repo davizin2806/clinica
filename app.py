@@ -149,34 +149,63 @@ def get_medicos():
         conn.close()
 
 # --- PACIENTES ---
-# (Seu /api/cadastrar_paciente já existe, está ótimo)
+# Em app.py, substitua sua rota 'rota_cadastrar_paciente' por esta:
+
 @app.route('/api/cadastrar_paciente', methods=['POST'])
 def rota_cadastrar_paciente():
     dados = request.get_json()
+    print(f"📩 Dados recebidos: {dados}")
+
     try:
-        # ... (seu código de cadastro de paciente) ...
-        # ... (só garanta que a SP sp_Paciente_Cadastrar existe no banco) ...
+        # Novos campos de login
+        email = dados['email']
+        senha = dados['senha'] # Campo novo!
+        
+        # Campos de paciente
+        nome = dados['nome']
+        cpf = dados['cpf']
+        data_nascimento = dados['data_nascimento']
+        telefone = dados['telefone']
+        id_convenio = dados.get('id_convenio') or None
+        if id_convenio == "": id_convenio = None
+        
+        # Campos de endereço
+        logradouro = dados['logradouro']
+        numero = dados['numero']
+        complemento = dados['complemento']
+        bairro = dados['bairro']
+        cidade = dados['cidade']
+        estado = dados['estado']
+        cep = dados['cep']
+
         conn = get_db_connection()
         if not conn:
             return jsonify({"message": "Erro de conexão com o banco de dados"}), 500
-        
-        id_convenio = dados.get('id_convenio') or None
-        if id_convenio == "": id_convenio = None
 
         cursor = conn.cursor()
+        
+        # A SP agora tem 15 parâmetros!
         sql_exec = """
             EXEC sp_Paciente_Cadastrar
-                @nome=?, @cpf=?, @data_nascimento=?, @telefone=?, @email=?, @id_convenio=?,
+                @email=?, @senha=?,
+                @nome=?, @cpf=?, @data_nascimento=?, @telefone=?, @id_convenio=?,
                 @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?
         """
         cursor.execute(sql_exec, (
-            dados['nome'], dados['cpf'], dados['data_nascimento'], dados['telefone'], dados['email'], id_convenio,
-            dados['logradouro'], dados['numero'], dados['complemento'], dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
+            email, senha,
+            nome, cpf, data_nascimento, telefone, id_convenio,
+            logradouro, numero, complemento, bairro, cidade, estado, cep
         ))
         conn.commit()
         cursor.close()
         conn.close()
-        return jsonify({"message": "Paciente cadastrado com sucesso!"}), 201
+
+        return jsonify({"message": "Paciente e Login criados com sucesso!"}), 201
+
+    except pyodbc.Error as e:
+        # Captura o erro do RAISERROR (ex: "E-mail duplicado")
+        # O e.args[1] contém a mensagem de erro vinda do SQL
+        return jsonify({"message": f"Erro do banco: {e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": f"Erro: {str(e)}"}), 500
 

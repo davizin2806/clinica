@@ -30,9 +30,18 @@
                     <input type="text" id="telefone" name="telefone" class="input_user" />
                 </div>
                 <div class="input_box">
-                    <label for="email" class="static_label">Email:</label>
-                    <input type="email" id="email" name="email" class="input_user" />
-                </div>
+    <label for="email" class="static_label">Email (Será usado para o login):</label>
+    <input type="email" id="email" name="email" class="input_user" required />
+</div>
+<div class="input_box">
+    <label for="senha" class="static_label">Senha (para o paciente acessar):</label>
+    <input type="password" id="senha" name="senha" class="input_user" required />
+</div>
+<div class="input_box">
+    <label for="confirmar_senha" class="static_label">Confirmar Senha:</label>
+    <input type="password" id="confirmar_senha" name="confirmar_senha" class="input_user" required />
+</div>
+                
                 <div class="input_box">
                     <label for="convenio" class="static_label">Convênio do Paciente:</label>
                     <select id="convenio" name="convenio">
@@ -78,53 +87,68 @@
         </form>
     </div>
 
-    <script>
-        // 1. Escuta o evento 'submit' do formulário
-        document.getElementById('formCadastrarPaciente').addEventListener('submit', function(event) {
+// No final de static/cadastrar_paciente.html
+// (substitua o script existente)
+
+<script>
+    const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
+
+    // ... (script 'DOMContentLoaded' para carregar convênios continua igual) ...
+
+    // --- Enviar Formulário (POST) ---
+    document.getElementById('formCadastrarPaciente').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const senha = document.getElementById('senha').value;
+        const confirmarSenha = document.getElementById('confirmar_senha').value;
+        
+        // Validação da senha no front-end
+        if (senha !== confirmarSenha) {
+            alert('As senhas não coincidem!');
+            return;
+        }
+
+        const dadosParaEnviar = {
+            // Dados do Login
+            email: document.getElementById('email').value,
+            senha: senha,
             
-            // 2. Impede o recarregamento padrão da página
-            event.preventDefault();
+            // Dados do Paciente
+            nome: document.getElementById('nome').value,
+            cpf: document.getElementById('cpf').value,
+            data_nascimento: document.getElementById('data_nascimento').value,
+            telefone: document.getElementById('telefone').value,
+            id_convenio: document.getElementById('convenio').value,
+            
+            // Dados do Endereço
+            logradouro: document.getElementById('logradouro').value,
+            numero: document.getElementById('numero').value,
+            complemento: document.getElementById('complemento').value,
+            bairro: document.getElementById('bairro').value,
+            cidade: document.getElementById('cidade').value,
+            estado: document.getElementById('estado').value,
+            cep: document.getElementById('cep').value
+        };
 
-            // 3. Pega os valores dos campos do formulário
-            // (Agora todos os IDs existem!)
-            const dadosParaEnviar = {
-                nome: document.getElementById('nome').value,
-                cpf: document.getElementById('cpf').value,
-                data_nascimento: document.getElementById('data_nascimento').value,
-                telefone: document.getElementById('telefone').value,
-                email: document.getElementById('email').value,
-                id_convenio: document.getElementById('convenio').value,
-                logradouro: document.getElementById('logradouro').value,
-                numero: document.getElementById('numero').value,
-                complemento: document.getElementById('complemento').value,
-                bairro: document.getElementById('bairro').value,
-                cidade: document.getElementById('cidade').value,
-                estado: document.getElementById('estado').value,
-                cep: document.getElementById('cep').value
-            };
-
-            // 4. Envia os dados para a API Python (Flask)
-            fetch('http://192.168.1.14:5000/api/cadastrar_paciente', {
-                method: 'POST',
-                headers: 
-                    { 'Content-Type': 'application/json' },
-                
-                body: JSON.stringify(dadosParaEnviar)
-            })
-            .then(response => response.json()) // Pega a resposta da API
-            .then(data => {
-                alert(data.message); // Mostra o alerta (ex: "Paciente cadastrado com sucesso!")
-                
-                if (data.message.includes("sucesso")) {
-                    event.target.reset(); // Limpa o formulário
-                    // window.location.href = 'dashbord_medico.html';
-                }
-            })
-            .catch(error => {
-                console.error('Erro na requisição:', error);
-                alert('Erro ao conectar com o servidor. Verifique o console.');
-            });
+        fetch(API_URL + '/api/cadastrar_paciente', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosParaEnviar)
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+            alert(body.message); // Ex: "Paciente e Login criados..." ou "Erro: E-mail duplicado"
+            
+            if (status === 201) { // 201 = Created
+                event.target.reset(); // Limpa o formulário
+                window.location.href = 'dashbord_medico.html';
+            }
+        })
+        .catch(error => {
+            console.error('Erro na requisição:', error);
+            alert('Erro ao conectar com o servidor. Verifique o console.');
         });
-    </script>
+    });
+</script>
 </body>
 </html>
