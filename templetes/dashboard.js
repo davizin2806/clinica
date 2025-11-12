@@ -6,7 +6,7 @@
 function logout() {
     localStorage.clear(); // Limpa tudo salvo (tipo_usuario, nome, etc.)
     alert('Você foi desconectado.');
-    window.location.href = '../static/index.html'; // Redireciona para o login
+    window.location.href = '../index.html'; // Redireciona para o login
 }
 
 /* * Adiciona os 'escutadores' de clique (event listeners)
