@@ -9,9 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusBusca = document.getElementById("status-busca");
     const btnSalvar = document.getElementById("salvar-atendimento");
     
-    const inputValorConsulta = document.getElementById('valor-consulta');
     const divListaExames = document.getElementById('lista-exames-disponiveis');
-    const spanTotal = document.getElementById('valor-total');
     
     let pacienteEncontrado = null; // Armazena o objeto COMPLETO do paciente
     let medicoId = localStorage.getItem('medico_id'); // Pega o ID do médico logado
@@ -36,23 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
             divListaExames.innerHTML = '<p style="color: red;">Erro ao carregar exames.</p>';
         });
 
-    // --- 3. Função Principal de Cálculo ---
-    function recalcularTotalGeral() {
-        let total = 0;
-        const valorConsulta = parseFloat(inputValorConsulta.value) || 0;
-        total += valorConsulta;
-
-        const todosExames = divListaExames.querySelectorAll('input[type="checkbox"]');
-        todosExames.forEach(checkbox => {
-            if (checkbox.checked) {
-                // (O cálculo de desconto real é feito no backend pela SP)
-                const precoPadrao = parseFloat(checkbox.dataset.precoPadrao);
-                total += precoPadrao;
-            }
-        });
-        spanTotal.textContent = `R$ ${total.toFixed(2)}`;
-    }
-
     // --- 4. Lógica de Busca de Paciente (com API) ---
     btnBuscar.addEventListener("click", () => {
         const termo = inputBusca.value.trim(); // CPF
@@ -75,13 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 pacienteEncontrado = paciente; // Salva o objeto do paciente
                 statusBusca.textContent = `Paciente encontrado: ${paciente.nome}`;
                 statusBusca.className = "status ok";
-                recalcularTotalGeral();
             })
             .catch(error => {
                 pacienteEncontrado = null;
                 statusBusca.textContent = "Paciente não encontrado.";
                 statusBusca.className = "status erro";
-                recalcularTotalGeral();
             });
     });
 
@@ -147,9 +126,4 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Erro ao salvar: " + error.message);
         }
     });
-    
-    // --- 6. Adiciona os "Escutadores" de Cálculo ---
-    inputValorConsulta.addEventListener('input', recalcularTotalGeral);
-    divListaExames.addEventListener('change', recalcularTotalGeral);
-    recalcularTotalGeral(); // Roda no início
 });

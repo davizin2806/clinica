@@ -24,6 +24,7 @@ async function validarLogin() {
       // --- SALVA OS DADOS NO LOCALSTORAGE ---
       localStorage.setItem('tipo_usuario', resultado.tipo_usuario);
       localStorage.setItem('usuario_nome', resultado.nome);
+      
       // Salva os IDs para as próximas telas
       if(resultado.id_paciente) {
         localStorage.setItem('paciente_id', resultado.id_paciente);
@@ -34,8 +35,6 @@ async function validarLogin() {
       
       alert(resultado.mensagem);
       
-      // O seu HTML está no root, os dashboards estão em /static/
-      // Portanto, o caminho está correto.
       if (resultado.tipo_usuario === 'MED') {
         window.location.href = 'static/dashbord_medico.html';
       } else {

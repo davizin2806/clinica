@@ -1,61 +1,172 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novo Atendimento</title>
-  <link rel="stylesheet" href="../templetes/novo_atendimento.css">
-  <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Atendimento</title>
+    <link rel="stylesheet" href="../templetes/novo_atendimento.css">
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="header-medico">
-      <h2>Novo Atendimento</h2>
-      <a href="dashbord_medico.html" class="cancelar">Cancelar e Voltar</a>
-    </div>
+    <div class="dashboard-container">
+        <div class="header-medico">
+            <h2>Novo Atendimento</h2>
+            <a href="dashbord_medico.html" class="cancelar">Cancelar e Voltar</a>
+        </div>
 
-    <div class="content">
-      <h3>Registro de Atendimento</h3>
-      <hr>
+        <div class="content">
+            <h3>Registro de Atendimento</h3>
+            <hr>
 
-      <label for="busca-paciente">Buscar Paciente (CPF ou Nome Completo):</label>
-      <div class="busca-container">
-        <input type="text" id="busca-paciente" placeholder="Digite o CPF ou nome do paciente...">
-        <button id="btn-buscar">Buscar</button>
-      </div>
-      <p id="status-busca" class="status"></p>
+            <label for="busca-paciente">Buscar Paciente (CPF):</label>
+            <div class="busca-container">
+                <input type="text" id="busca-paciente" placeholder="Digite o CPF do paciente...">
+                <button id="btn-buscar">Buscar</button>
+            </div>
+            <p id="status-busca" class="status"></p>
 
-            <label for="obs-atendimento">Observações da Consulta:</label>
-      <textarea id="obs-atendimento" rows="5"></textarea>
+            <label for="obs-atendimento">Observações da Consulta:</label>
+            <textarea id="obs-atendimento" rows="5"></textarea>
 
-      <div>
-        <label for="valor-consulta">Valor da Consulta (R$):</label>
-        <input type="number" id="valor-consulta" min="0" step="0.01" placeholder="Ex: 150.00">
-      </div>
-      <h3>Solicitar Exames</h3>
-      <div id="lista-exames-disponiveis" class="lista-exames">
-          
-          <label>
-              <input type="checkbox" data-id-exame="1" data-preco-padrao="100.00"> 
-              Hemograma Completo
-              <span class="preco-exame"> (Padrão: R$ 100.00)</span>
-          </label>
-          
-          <label>
-              <input type="checkbox" data-id-exame="2" data-preco-padrao="150.00"> 
-              Raio-X do Tórax
-              <span class="preco-exame"> (Padrão: R$ 150.00)</span>
-          </label>
-          
-      </div>
+            <h3>Solicitar Exames</h3>
+            <div id="lista-exames-disponiveis" class="lista-exames">
+                <p>Carregando exames...</p>
+            </div>
 
-      <hr>
-      <h3>Total (Consulta + Exames): <span id="valor-total">R$ 0.00</span></h3>
+            <hr>
+            <button class="btn-submit" id="salvar-atendimento">Salvar Atendimento e Exames</button>
+        </div>
+    </div>
 
-      <button class="btn-submit" id="salvar-atendimento">Salvar Atendimento</button>
-    </div>
-  </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    
+            const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
 
-  <script src="../templetes/novo_atendimento.js"></script>
+            // --- 1. Seleção dos Elementos ---
+            const btnBuscar = document.getElementById("btn-buscar");
+            const inputBusca = document.getElementById("busca-paciente");
+            const statusBusca = document.getElementById("status-busca");
+            const btnSalvar = document.getElementById("salvar-atendimento");
+            
+            const divListaExames = document.getElementById('lista-exames-disponiveis');
+            
+            let pacienteEncontrado = null; // Armazena o objeto COMPLETO do paciente
+            let medicoId = localStorage.getItem('medico_id'); // Pega o ID do médico logado
+
+            // --- 2. Carregar Exames Disponíveis (da API) ---
+            fetch(API_URL + '/api/exames')
+                .then(response => response.json())
+                .then(data => {
+                    divListaExames.innerHTML = ''; // Limpa "Carregando..."
+                    data.forEach(exame => {
+                        const label = document.createElement('label');
+                        label.innerHTML = `
+                            <input type="checkbox" data-id-exame="${exame.id_exame}" data-preco-padrao="${exame.preco_padrao}"> 
+                            ${exame.nome}
+                            <span class="preco-exame"> (Padrão: R$ ${exame.preco_padrao.toFixed(2)})</span>
+                        `;
+                        divListaExames.appendChild(label);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar exames:', error);
+                    divListaExames.innerHTML = '<p style="color: red;">Erro ao carregar exames.</p>';
+                });
+
+            // --- 4. Lógica de Busca de Paciente (com API) ---
+            btnBuscar.addEventListener("click", () => {
+                const termo = inputBusca.value.trim(); // CPF
+                if (!termo) {
+                    statusBusca.textContent = "Digite o CPF do paciente.";
+                    statusBusca.className = "status erro";
+                    pacienteEncontrado = null;
+                    return;
+                }
+
+                statusBusca.textContent = "Buscando...";
+                statusBusca.className = "status";
+                
+                fetch(API_URL + '/api/pacientes/cpf/' + termo)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Paciente não encontrado');
+                        return response.json();
+                    })
+                    .then(paciente => {
+                        pacienteEncontrado = paciente; // Salva o objeto do paciente
+                        statusBusca.textContent = `Paciente encontrado: ${paciente.nome}`;
+                        statusBusca.className = "status ok";
+                    })
+                    .catch(error => {
+                        pacienteEncontrado = null;
+                        statusBusca.textContent = "Paciente não encontrado.";
+                        statusBusca.className = "status erro";
+                    });
+            });
+
+            // --- 5. Lógica de Salvar Atendimento (com API) ---
+            btnSalvar.addEventListener("click", async () => {
+                const observacoes = document.getElementById("obs-atendimento").value.trim();
+                
+                if (!pacienteEncontrado) {
+                    alert("Selecione um paciente válido antes de salvar o atendimento.");
+                    return;
+                }
+                if (!medicoId) {
+                    alert("Erro: Médico não identificado. Faça login novamente.");
+                    return;
+                }
+
+                try {
+                    // --- 5a. Salva o Atendimento (Consulta) ---
+                    const dadosAtendimento = {
+                        id_paciente: pacienteEncontrado.id_paciente,
+                        id_medico: parseInt(medicoId),
+                        data_atendimento: new Date().toISOString(), // Data/hora atual
+                        observacoes: observacoes
+                    };
+
+                    const responseAtendimento = await fetch(API_URL + '/api/atendimentos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dadosAtendimento)
+                    });
+
+                    if (!responseAtendimento.ok) {
+                        const erro = await responseAtendimento.json();
+                        throw new Error('Falha ao salvar atendimento: ' + erro.message);
+                    }
+
+                    // --- 5b. Salva os Exames Solicitados ---
+                    const examesSelecionados = document.querySelectorAll("#lista-exames-disponiveis input:checked");
+                    if (examesSelecionados.length > 0) {
+                        const promessasExames = [];
+                        examesSelecionados.forEach(checkbox => {
+                            const dadosExame = {
+                                id_paciente: pacienteEncontrado.id_paciente,
+                                id_exame: parseInt(checkbox.dataset.idExame),
+                                data_realizacao: new Date().toISOString()
+                            };
+                            
+                            const promessa = fetch(API_URL + '/api/exames_realizados', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(dadosExame)
+                            });
+                            promessasExames.push(promessa);
+                        });
+                        await Promise.all(promessasExames); // Espera todos salvarem
+                    }
+
+                    alert(`Atendimento e exames salvos com sucesso para o paciente ${pacienteEncontrado.nome}.`);
+                    window.location.href = "dashbord_medico.html";
+
+                } catch (error) {
+                    console.error("Erro ao salvar:", error);
+                    alert("Erro ao salvar: " + error.message);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

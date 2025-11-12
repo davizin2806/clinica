@@ -1,38 +1,188 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editar Meus Dados</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Meus Dados</title>
     <link rel="stylesheet" href="../templetes/editar_paciente.css" /> 
-    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+    <style>
+        .input_box label.static_label { color: #333; font-weight: bold; margin-bottom: 5px; display: block; }
+        .input_box input[type="date"], .input_box select, .input_box .input_user { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #f9f9f9; font-size: 15px; box-sizing: border-box; }
+        .input_box .label_input { display: none; } /* Desativa o label flutuante */
+    </style>
 </head>
 <body>
-    
     <div class="box">
-        <form id="formEditarPaciente">
-            <fieldset>
-                <legend>Editar Meus Dados</legend>
-                <p style="text-align: center;">(Aqui o backend preencheria seus dados atuais)</p>
+        <form id="formEditarPaciente">
+            <fieldset>
+                <legend>Editar Meus Dados</legend>
+                <p id="loadingMessage" style="text-align: center;">Carregando seus dados...</p>
 
-                <div class="input_box">
-                    <input type="text" id="nome" name="nome" class="input_user" required/>
-                    <label for="nome" class="label_input">Nome:</label>
-                </div>
-                <div class="input_box">
-                    <input type="tel" id="telefone" name="telefone" class="input_user" required/>
-                    <label for="telefone" class="label_input">Telefone:</label>
-                </div>
-                <div class="input_box">
-                    <input type="text" id="endereco" name="endereco" class="input_user" required/>
-                    <label for="endereco" class="label_input">Endereço:</label>
-                </div>
-                
+                <input type="hidden" id="id_paciente" name="id_paciente" />
+                <input type="hidden" id="id_endereco" name="id_endereco" />
+
+                <div class="input_box">
+                    <label for="nome" class="static_label">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" class="input_user" required />
+                </div>
+                <div class="input_box">
+                    <label for="cpf" class="static_label">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" class="input_user" required />
+                </div>
+                <div class="input_box">
+                    <label for="data_nascimento" class="static_label">Data de Nascimento:</label>
+                    <input type="date" id="data_nascimento" name="data_nascimento" required />
+                </div>
+                <div class="input_box">
+                    <label for="telefone" class="static_label">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone" class="input_user" />
+                </div>
+                <div class="input_box">
+                    <label for="email" class="static_label">Email (não altera o login):</label>
+                    <input type="email" id="email" name="email" class="input_user" />
+                </div>
+                <div class="input_box">
+                    <label for="convenio" class="static_label">Convênio do Paciente:</label>
+                    <select id="convenio" name="convenio">
+                        <option value="">Nenhum / Particular</option>
+                        </select>
+                </div>
+                <hr style="margin: 20px 0;">
+                
+                <div class="input_box">
+                    <label for="cep" class="static_label">CEP:</label>
+                    <input type="text" id="cep" name="cep" class="input_user" required />
+                </div>
+                <div class="input_box">
+                    <label for="logradouro" class="static_label">Logradouro (Rua/Av.):</label>
+                    <input type="text" id="logradouro" name="logradouro" class="input_user" required />
+                </div>
+                <div class="input_box">
+                    <label for="numero" class="static_label">Número:</label>
+                    <input type="text" id="numero" name="numero" class="input_user" />
+                </div>
+                <div class="input_box">
+                    <label for="complemento" class="static_label">Complemento:</label>
+                    <input type="text" id="complemento" name="complemento" class="input_user" />
+                </div>
+                <div class="input_box">
+                    <label for="bairro" class="static_label">Bairro:</label>
+                    <input type="text" id="bairro" name="bairro" class="input_user" required />
+                </div>
+                <div class="input_box">
+                    <label for="cidade" class="static_label">Cidade:</label>
+                    <input type="text" id="cidade" name="cidade" class="input_user" required />
+                </div>
+                <div class="input_box">
+                    <label for="estado" class="static_label">Estado (Sigla, ex: ES):</label>
+                    <input type="text" id="estado" name="estado" class="input_user" required maxlength="2" />
+                </div>
+                
                 <input type="submit" class="btn-submit" value="Salvar Alterações" />
                 <a href="dashbord_paciente.html" class="cancelar">Cancelar e Voltar</a>
-            </fieldset>
-        </form>
-    </div>
+            </fieldset>
+        </form>
+    </div>
 
+    <script>
+        const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+
+        const pacienteId = localStorage.getItem('paciente_id');
+        if (!pacienteId) {
+            alert('Paciente não identificado!');
+            window.location.href = '../index.html';
+        }
+
+        // --- Carregar Dados (GET) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formEditarPaciente');
+            const loadingMessage = document.getElementById('loadingMessage');
+
+            // 1. Carregar Convênios (para o dropdown)
+            const selectConvenio = document.getElementById('convenio');
+            const conveniosPromise = fetch(API_URL + '/api/convenios')
+                .then(response => response.json())
+                .then(convenios => {
+                    convenios.forEach(convenio => {
+                        const option = document.createElement('option');
+                        option.value = convenio.id_convenio;
+                        option.textContent = convenio.nome;
+                        selectConvenio.appendChild(option);
+                    });
+                });
+
+            // 2. Carregar dados DO PACIENTE
+            const pacientePromise = fetch(API_URL + '/api/pacientes/' + pacienteId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('id_paciente').value = data.id_paciente;
+                    document.getElementById('id_endereco').value = data.id_endereco;
+                    document.getElementById('nome').value = data.nome;
+                    document.getElementById('cpf').value = data.cpf;
+                    document.getElementById('data_nascimento').value = data.data_nascimento.split('T')[0];
+                    document.getElementById('telefone').value = data.telefone;
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('cep').value = data.cep;
+                    document.getElementById('logradouro').value = data.logradouro;
+                    document.getElementById('numero').value = data.numero;
+                    document.getElementById('complemento').value = data.complemento;
+                    document.getElementById('bairro').value = data.bairro;
+                    document.getElementById('cidade').value = data.cidade;
+                    document.getElementById('estado').value = data.estado;
+                    return data; // Retorna os dados para setar o convênio
+                });
+
+            // 3. Espera ambos carregarem para setar o convênio
+            Promise.all([conveniosPromise, pacientePromise])
+                .then(([convenios, pacienteData]) => {
+                    document.getElementById('convenio').value = pacienteData.id_convenio || "";
+                    loadingMessage.style.display = 'none'; // Esconde "Carregando..."
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar dados:', error);
+                    loadingMessage.textContent = 'Erro ao carregar dados.';
+                });
+        });
+
+        // --- Salvar Alterações (PUT) ---
+        document.getElementById('formEditarPaciente').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const dadosParaEnviar = {
+                id_endereco: document.getElementById('id_endereco').value,
+                nome: document.getElementById('nome').value,
+                cpf: document.getElementById('cpf').value,
+                data_nascimento: document.getElementById('data_nascimento').value,
+                telefone: document.getElementById('telefone').value,
+                email: document.getElementById('email').value,
+                id_convenio: document.getElementById('convenio').value,
+                logradouro: document.getElementById('logradouro').value,
+                numero: document.getElementById('numero').value,
+                complemento: document.getElementById('complemento').value,
+                bairro: document.getElementById('bairro').value,
+                cidade: document.getElementById('cidade').value,
+                estado: document.getElementById('estado').value,
+                cep: document.getElementById('cep').value
+            };
+
+            fetch(API_URL + '/api/pacientes/' + pacienteId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosParaEnviar)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.message.includes("sucesso")) {
+                    window.location.href = 'dashbord_paciente.html';
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao salvar. Verifique o console.');
+            });
+        });
+    </script>
 </body>
 </html>

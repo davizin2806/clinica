@@ -15,30 +15,115 @@
 
                 <div class="input_box">
                     <label for="especialidade">Selecione a especialidade:</label>
-                    <select id="especialidade" name="especialidade">
+                    <select id="especialidade" name="especialidade" required>
                         <option value="">Escolha...</option>
-                        <option value="cardiologia">Cardiologia</option>
-                        <option value="dermatologia">Dermatologia</option>
-                        <option value="clinico_geral">Clínico Geral</option>
-                    </select>
+                        </select>
                 </div>
                 
                 <div class="input_box">
-                    <label for="data_desejada"><b>Data Desejada:</b></label>
-                    <input type="date" id="data_desejada" name="data_desejada" required />
+                    <label for="medico">Selecione o Médico:</label>
+                    <select id="medico" name="medico" required>
+                        <option value="">Escolha uma especialidade primeiro...</option>
+                        </select>
+                </div>
+
+                <div class="input_box">
+                    <label for="data_desejada"><b>Data e Hora Desejada:</b></label>
+                    <input type="datetime-local" id="data_desejada" name="data_desejada" required />
                 </div>
 
                 <div class="input_box" style="margin-top: 25px;">
-                    <label for="motivo" class="label_input">Motivo da Consulta / Sintomas:</label>
+                    <label for="motivo" class="static_label">Motivo da Consulta / Sintomas:</label>
                     <textarea id="motivo" name="motivo" rows="4" class="input_user" required></textarea>
                 </div>
                 
                 <input type="submit" class="btn-submit" value="Solicitar Agendamento" />
-
                 <a href="dashbord_paciente.html" class="btn-cancel">Cancelar e Voltar</a>
 
             </fieldset>
         </form>
     </div>
+
+    <script>
+        const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+        let medicosData = []; // Cache de médicos
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectEspecialidade = document.getElementById('especialidade');
+            const selectMedico = document.getElementById('medico');
+
+            // 1. Carregar Especialidades
+            fetch(API_URL + '/api/especialidades')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(esp => {
+                        const option = document.createElement('option');
+                        option.value = esp.id_especialidade;
+                        option.textContent = esp.nome;
+                        selectEspecialidade.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar especialidades:', error));
+            
+            // 2. Carregar TODOS os Médicos (para filtrar depois)
+            fetch(API_URL + '/api/medicos')
+                .then(response => response.json())
+                .then(data => {
+                    medicosData = data; // Salva a lista de médicos
+                })
+                .catch(error => console.error('Erro ao carregar médicos:', error));
+
+            // 3. Adicionar lógica de filtro
+            selectEspecialidade.addEventListener('change', function() {
+                selectMedico.innerHTML = '<option value="">Escolha o médico...</option>';
+                const especialidadeId = parseInt(this.value);
+                if (!especialidadeId) return;
+                
+                const medicosFiltrados = medicosData.filter(med => med.id_especialidade === especialidadeId);
+                
+                medicosFiltrados.forEach(med => {
+                    const option = document.createElement('option');
+                    option.value = med.id_medico;
+                    option.textContent = med.nome;
+                    selectMedico.appendChild(option);
+                });
+            });
+        });
+
+        // --- Enviar Formulário (POST) ---
+        document.getElementById('formAgendarConsulta').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const pacienteId = localStorage.getItem('paciente_id');
+            if (!pacienteId) {
+                alert('Erro: Paciente não identificado. Faça o login novamente.');
+                return;
+            }
+
+            const dadosParaEnviar = {
+                id_paciente: parseInt(pacienteId),
+                id_medico: document.getElementById('medico').value,
+                data_atendimento: document.getElementById('data_desejada').value,
+                observacoes: document.getElementById('motivo').value
+            };
+
+            fetch(API_URL + '/api/atendimentos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosParaEnviar)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.message.includes("sucesso")) {
+                    window.location.href = 'dashbord_paciente.html';
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao agendar. Verifique o console.');
+            });
+        });
+    </script>
 </body>
 </html>
