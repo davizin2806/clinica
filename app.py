@@ -117,3 +117,5 @@ def rota_cadastrar_paciente():
 if __name__ == '__main__':
     # host='0.0.0.0' significa "aceitar conexões de qualquer IP"
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+    
