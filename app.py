@@ -6,25 +6,29 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  
 
-# --- 2. String de Conexão com SQL Server ---
-# ⚠️ EDITE O NOME DO SERVIDOR
+# --- 2. String de Conexão com Autenticação SQL ---
+# ⚠️ AGORA VAMOS USAR O USUÁRIO E SENHA QUE CRIAMOS
 DB_CONFIG = {
     'driver': '{ODBC Driver 17 for SQL Server}', 
-    'server': 'DESKTOP-18TVE6E',  # <-- VERIFIQUE SE ESSE É O NOME COMPLETO (com \SQLEXPRESS)
-    'database': 'CLINICASJVI'
-    # Usuário e senha são REMOVIDOS
+    'server': 'DESKTOP-18TVE6E',  # O nome que funcionou antes
+    'database': 'CLINICASJVI',
+    'username': 'api_login',                 
+    'password': 'UmaSenhaForteParaSuaAPI_123!' 
 }
 
 def get_db_connection():
     """Cria e retorna uma nova conexão com o banco de dados."""
     try:
-        # ATIVANDO A AUTENTICAÇÃO DO WINDOWS
+        # A string de conexão agora é mais simples
         conn_str = (
             f"DRIVER={DB_CONFIG['driver']};"
             f"SERVER={DB_CONFIG['server']};"
             f"DATABASE={DB_CONFIG['database']};"
-            f"Trusted_Connection=yes;" # <-- ISSO ATIVA A AUTENTICAÇÃO DO WINDOWS
+            f"UID={DB_CONFIG['username']};"     # <-- User ID
+            f"PWD={DB_CONFIG['password']};"     # <-- Password
         )
+        # Note que "Trusted_Connection=yes;" FOI REMOVIDO
+        
         conn = pyodbc.connect(conn_str)
         return conn
     except Exception as e:
