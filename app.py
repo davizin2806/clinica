@@ -113,6 +113,7 @@ def rota_cadastrar_paciente():
         # Captura outros erros (ex: 'nome' não enviado no JSON)
         return jsonify({"message": f"Erro inesperado: {str(e)}"}), 500
 
+    
 # --- 4. Roda o Servidor Flask ---
 if __name__ == '__main__':
     # host='0.0.0.0' significa "aceitar conexões de qualquer IP"
