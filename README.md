@@ -1,7 +1,7 @@
 
 # Parte 2 do Projeto Clinica João VI
 
-A  [Primeira parte do projeto](https://github.com/fab027/Clinica-Joao-VI) se baseou na criação do modelo entidade relacionamento do banco de dados, juntamente com o seu script sql além do artigo que busca explicar a parte conceitual do banco de dados como um todo
+A  [Primeira parte do projeto](https://github.com/fab027/Clinica-Joao-VI) se fundamentou na criação do modelo entidade relacionamento do banco de dados, juntamente com o seu script sql além do artigo que busca explicar a parte conceitual do banco de dados como um todo
 
 
 ## Segunda Parte do Projeto
@@ -15,6 +15,6 @@ Agora a segunda parte do projeto busca criar de fato o sistema, com a criação 
 - [Fabricio Nascimento](https://github.com/fab027)
 - [Mateus Fonseca](https://github.com/fonsca)
 - [Talita Canedo](https://github.com/TalitaCFederici)
-- [Yago Van Der Maas](https://github.com)
+- [Yago Van Der Maas](https://github.com/yago-vandermaas)
 
 
