@@ -424,5 +424,4 @@ def relatorio_historico_medico(id_medico):
 
 # --- 8. Rodar o servidor ---
 if __name__ == '__main__':
-    # Use 192.168.1.14 para escutar na sua rede
-    app.run(host='192.168.1.14', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
