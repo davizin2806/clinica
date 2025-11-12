@@ -44,6 +44,24 @@ legend {
     margin-bottom: 20px;
 }
 
+.input_box label.static_label {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+.input_box input[type="date"],
+.input_box select,
+.input_box .input_user {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
 /* Estilo para o container de cada input, para o efeito de label flutuante */
 .input_box {
     position: relative;
