@@ -1,161 +1,162 @@
-// Espera o HTML carregar antes de "ligar" os botões
+// templetes/novo_atendimento.js
 document.addEventListener("DOMContentLoaded", () => {
     
+    const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+
     // --- 1. Seleção dos Elementos ---
-    // Botões e status
     const btnBuscar = document.getElementById("btn-buscar");
     const inputBusca = document.getElementById("busca-paciente");
     const statusBusca = document.getElementById("status-busca");
     const btnSalvar = document.getElementById("salvar-atendimento");
     
-    // Elementos de Cálculo
     const inputValorConsulta = document.getElementById('valor-consulta');
     const divListaExames = document.getElementById('lista-exames-disponiveis');
     const spanTotal = document.getElementById('valor-total');
     
-    let pacienteEncontrado = null;
+    let pacienteEncontrado = null; // Armazena o objeto do paciente
+    let medicoId = localStorage.getItem('medico_id'); // Pega o ID do médico logado
 
-    // Simulação de pacientes
-    const pacientesFicticios = [
-        { id: 1, nome: "Maria Silva", cpf: "123.456.789-00", id_convenio: 1 }, // Convênio A (simulado)
-        { id: 2, nome: "João Pereira", cpf: "987.654.321-00", id_convenio: 2 }, // Convênio B (simulado)
-        { id: 3, nome: "Ana Costa", cpf: "111.222.333-44", id_convenio: null } // Particular
-    ];
+    // --- 2. Carregar Exames Disponíveis (da API) ---
+    fetch(API_URL + '/api/exames')
+        .then(response => response.json())
+        .then(data => {
+            divListaExames.innerHTML = ''; // Limpa "Carregando..."
+            data.forEach(exame => {
+                const label = document.createElement('label');
+                // Salva o ID e o Preço no 'dataset' do checkbox
+                label.innerHTML = `
+                    <input type="checkbox" data-id-exame="${exame.id_exame}" data-preco-padrao="${exame.preco_padrao}"> 
+                    ${exame.nome}
+                    <span class="preco-exame"> (Padrão: R$ ${exame.preco_padrao.toFixed(2)})</span>
+                `;
+                divListaExames.appendChild(label);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar exames:', error);
+            divListaExames.innerHTML = '<p style="color: red;">Erro ao carregar exames.</p>';
+        });
 
-    
-    // --- 2. Função Principal de Cálculo (Atualizada) ---
+    // --- 3. Função Principal de Cálculo ---
     function recalcularTotalGeral() {
         let total = 0;
-
-        // --- PARTE A: Valor da Consulta ---
         const valorConsulta = parseFloat(inputValorConsulta.value) || 0;
         total += valorConsulta;
 
-        // --- PARTE B: Valor dos Exames ---
         const todosExames = divListaExames.querySelectorAll('input[type="checkbox"]');
 
         todosExames.forEach(checkbox => {
-            const label = checkbox.parentElement;
-            const spanPreco = label.querySelector('.preco-exame');
-            const idExame = checkbox.dataset.idExame;
-            const precoPadrao = parseFloat(checkbox.dataset.precoPadrao);
-
-            // --- LÓGICA DE DESCONTO (SIMULAÇÃO) ---
-            // No mundo real, usaríamos o 'pacienteEncontrado.id_convenio'
-            // para perguntar ao backend.
-            
-            let desconto = 0;
-            if (pacienteEncontrado && pacienteEncontrado.id_convenio === 1 && idExame === '1') {
-                // Paciente do "Convênio A" (id 1) tem 10% no Hemograma (id 1)
-                desconto = 0.10; 
-            }
-            if (pacienteEncontrado && pacienteEncontrado.id_convenio === 2 && idExame === '2') {
-                // Paciente do "Convênio B" (id 2) tem 5% no Raio-X (id 2)
-                desconto = 0.05;
-            }
-            // --- FIM DA SIMULAÇÃO ---
-            
-            const valorFinalExame = precoPadrao * (1 - desconto);
-
-            // Atualiza o texto do span individual
             if (checkbox.checked) {
-                // Se estiver marcado, adiciona o valor ao total
-                total += valorFinalExame;
-
-                // E atualiza o span
-                let textoDesconto = (desconto > 0) ? ` (Com desconto: R$ ${valorFinalExame.toFixed(2)})` : ` (R$ ${valorFinalExame.toFixed(2)})`;
-                spanPreco.textContent = textoDesconto;
-                spanPreco.style.color = 'green';
-                spanPreco.style.fontWeight = 'bold';
-            } else {
-                // Se não estiver marcado, apenas reseta o span
-                spanPreco.textContent = ` (Padrão: R$ ${precoPadrao.toFixed(2)})`;
-                spanPreco.style.color = 'black';
-                spanPreco.style.fontWeight = 'normal';
+                // Em um sistema real, o backend calcularia o desconto.
+                // Por agora, vamos apenas somar o preço padrão.
+                const precoPadrao = parseFloat(checkbox.dataset.precoPadrao);
+                total += precoPadrao;
             }
         });
-
-        // --- PARTE C: Atualiza o Total no Rodapé ---
         spanTotal.textContent = `R$ ${total.toFixed(2)}`;
     }
 
-
-    // --- 3. Lógica de Busca de Paciente (Atualizada) ---
-    // (Adicionei 'recalcularTotalGeral' aqui, pois o convênio do paciente afeta os preços)
+    // --- 4. Lógica de Busca de Paciente (com API) ---
     btnBuscar.addEventListener("click", () => {
         const termo = inputBusca.value.trim();
-        
         if (!termo) {
-             statusBusca.textContent = "Digite o nome completo ou CPF do paciente.";
+             statusBusca.textContent = "Digite o CPF do paciente.";
              statusBusca.className = "status erro";
              pacienteEncontrado = null;
-        } else {
-            // Simulação local
-            const paciente = pacientesFicticios.find(
-                (p) => p.cpf === termo || p.nome.toLowerCase() === termo.toLowerCase()
-            );
+             return;
+        }
 
-            if (paciente) {
-                pacienteEncontrado = paciente;
+        statusBusca.textContent = "Buscando...";
+        statusBusca.className = "status";
+        
+        // Busca na API pelo CPF
+        fetch(API_URL + '/api/pacientes/cpf/' + termo)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Paciente não encontrado');
+                }
+                return response.json();
+            })
+            .then(paciente => {
+                pacienteEncontrado = paciente; // Salva o objeto do paciente
                 statusBusca.textContent = `Paciente encontrado: ${paciente.nome}`;
                 statusBusca.className = "status ok";
-            } else {
+                // (A lógica de desconto real seria mais complexa)
+                recalcularTotalGeral();
+            })
+            .catch(error => {
                 pacienteEncontrado = null;
                 statusBusca.textContent = "Paciente não encontrado.";
                 statusBusca.className = "status erro";
-            }
-        }
-        
-        // **IMPORTANTE**: Recalcula os preços assim que o paciente é selecionado/removido
-        recalcularTotalGeral();
+                recalcularTotalGeral();
+            });
     });
 
-
-    // --- 4. Lógica de Salvar Atendimento ---
-    btnSalvar.addEventListener("click", () => {
+    // --- 5. Lógica de Salvar Atendimento (com API) ---
+    btnSalvar.addEventListener("click", async () => {
         const observacoes = document.getElementById("obs-atendimento").value.trim();
-        const valorConsulta = parseFloat(inputValorConsulta.value) || 0;
         
-        // Pega os exames E seus valores finais calculados
-        const examesSelecionados = Array.from(
-            document.querySelectorAll("#lista-exames-disponiveis input:checked")
-        ).map((el) => {
-            const precoTexto = el.parentElement.querySelector('.preco-exame').textContent;
-            return {
-                nome: el.parentElement.textContent.split('(')[0].trim(), // Pega só o nome
-                valor_final: precoTexto.match(/R\$ (\d+\.\d+)/)[1] // Pega só o número
-            };
-        });
-
         if (!pacienteEncontrado) {
             alert("Selecione um paciente válido antes de salvar o atendimento.");
             return;
         }
+        if (!medicoId) {
+            alert("Erro: Médico não identificado. Faça login novamente.");
+            return;
+        }
 
-        const novoAtendimento = {
-            paciente_id: pacienteEncontrado.id,
-            observacoes,
-            valor_consulta: valorConsulta,
-            exames: examesSelecionados,
-            total_atendimento: document.getElementById('valor-total').textContent,
-            data: new Date().toLocaleString("pt-BR")
-        };
+        try {
+            // --- 5a. Salva o Atendimento (Consulta) ---
+            const dadosAtendimento = {
+                id_paciente: pacienteEncontrado.id_paciente,
+                id_medico: parseInt(medicoId),
+                data_atendimento: new Date().toISOString(), // Data/hora atual
+                observacoes: observacoes
+            };
 
-        console.log("Atendimento salvo (simulado):", novoAtendimento);
-        alert(`Atendimento salvo com sucesso para o paciente ${pacienteEncontrado.nome}.`);
-        window.location.href = "dashbord_medico.html";
-        
-        // (O código de integração real com o backend ficaria aqui)
+            const responseAtendimento = await fetch(API_URL + '/api/atendimentos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosAtendimento)
+            });
+
+            if (!responseAtendimento.ok) {
+                const erro = await responseAtendimento.json();
+                throw new Error('Falha ao salvar atendimento: ' + erro.message);
+            }
+
+            // --- 5b. Salva os Exames Solicitados ---
+            const examesSelecionados = document.querySelectorAll("#lista-exames-disponiveis input:checked");
+            if (examesSelecionados.length > 0) {
+                const promessasExames = [];
+                examesSelecionados.forEach(checkbox => {
+                    const dadosExame = {
+                        id_paciente: pacienteEncontrado.id_paciente,
+                        id_exame: parseInt(checkbox.dataset.idExame),
+                        data_realizacao: new Date().toISOString()
+                    };
+                    
+                    const promessa = fetch(API_URL + '/api/exames_realizados', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dadosExame)
+                    });
+                    promessasExames.push(promessa);
+                });
+                await Promise.all(promessasExames); // Espera todos salvarem
+            }
+
+            alert(`Atendimento e exames salvos com sucesso para o paciente ${pacienteEncontrado.nome}.`);
+            window.location.href = "dashbord_medico.html";
+
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+            alert("Erro ao salvar: " + error.message);
+        }
     });
     
-    
-    // --- 5. Adiciona os "Escutadores" de Cálculo ---
-    // Escuta qualquer mudança no campo "Valor da Consulta"
+    // --- 6. Adiciona os "Escutadores" de Cálculo ---
     inputValorConsulta.addEventListener('input', recalcularTotalGeral);
-    
-    // Escuta qualquer clique nos checkboxes de exame
     divListaExames.addEventListener('change', recalcularTotalGeral);
-
-    // Roda a função uma vez no início para setar o valor (R$ 0.00)
-    recalcularTotalGeral();
+    recalcularTotalGeral(); // Roda no início
 });
