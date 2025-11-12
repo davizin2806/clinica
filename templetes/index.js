@@ -56,10 +56,10 @@ async function validarLogin() {
         // REDIRECIONAMENTO INTELIGENTE
         if (resultado.tipo_usuario === 'MED') {
           alert('Login de Médico realizado! Redirecionando...');
-          window.location.href = "dashbord_medico.html";
+          window.location.href = "static/dashbord_medico.html";
         } else if (resultado.tipo_usuario === 'PAC') {
           alert('Login de Paciente realizado! Redirecionando...');
-          window.location.href = "dashbord_paciente.html";
+          window.location.href = "static/dashbord_paciente.html";
         }
         
       } else {

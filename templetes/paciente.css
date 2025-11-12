@@ -69,6 +69,7 @@ button:hover {
 .header-logo {
     height: 100px; /* Ajusta a altura da imagem */
     margin-right: -500px; /* Adiciona um espaço entre a logo e o título */
+    margin-left: 40px; /* Adiciona um espaço entre a logo e o título */
 }
 
 /* Seções do painel */

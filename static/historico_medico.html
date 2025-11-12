@@ -1,37 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico de Atendimentos</title>
-    <link rel="stylesheet" href="../templetes/historico_medico.css"> 
-    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Atendimentos</title>
+        <link rel="stylesheet" href="../templetes/historico_medico.css"> 
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="header-medico">
-            <h2>Meu Histórico de Atendimentos</h2>
-            <a href="dashbord_medico.html">Voltar</a>
-        </div>
+    <div class="dashboard-container">
+        <div class="header-medico">
+            <h2>Meu Histórico de Atendimentos</h2>
+            <a href="dashbord_medico.html">Voltar</a>
+        </div>
+        
+        <div class="content">
+
+            <div class="filtros-container">
+                <h4>Filtrar por Convênio:</h4>
+                <div class="filtro-grupo" id="filtro-convenios">
+                    <label>
+                        <input type="checkbox" name="convenio" value="1"> Unimed
+                    </label>
+                    <label>
+                        <input type="checkbox" name="convenio" value="2"> Bradesco Saúde
+                    </label>
+                    <label>
+                        <input type="checkbox" name="convenio" value="particular"> Particular (Sem convênio)
+                    </label>
+                </div>
+            </div>
+                        <p>Aqui está uma lista de todos os atendimentos que você já realizou.</p>
+            <div id="lista-historico-medico">
         
-        <div class="content">
-            <p>Aqui está uma lista de todos os atendimentos que você já realizou, do mais recente para o mais antigo.</p>
-            <div id="lista-historico-medico">
-        <!-- Atendimento com pagamento pendente -->
-        <div class="card-atendimento pendente">
-            <strong>Data:</strong> 10/11/2025<br>
-            <strong>Paciente:</strong> Carlos Pereira (CPF: 111.222.333-44)<br>
-            <strong>Observações:</strong> Paciente relatou dores no peito.<br>
-            <strong>Exames Solicitados:</strong> Eletrocardiograma.
-        </div>
-        
-        <!-- Atendimento com pagamento realizado -->
-        <div class="card-atendimento pago">
-            <strong>Data:</strong> 05/10/2025<br>
-            <strong>Paciente:</strong> Ana Costa (CPF: 987.654.321-00)<br>
-            <strong>Observações:</strong> Check-up anual.<br>
-            <strong>Exames Solicitados:</strong> Hemograma Completo.
-        </div>
-    </div>
+                                                <div class="card-atendimento pago" data-id-convenio="1">
+                    <strong>Data:</strong> 05/10/2025<br>
+                    <strong>Paciente:</strong> Ana Costa (CPF: 987.654.321-00)<br>
+                    <strong>Observações:</strong> Check-up anual.<br>
+                    <strong>Exames Solicitados:</strong> Hemograma Completo.
+                </div>
+
+                                <div class="card-atendimento pendente" data-id-convenio="2">
+                    <strong>Data:</strong> 10/11/2025<br>
+                    <strong>Paciente:</strong> Carlos Pereira (CPF: 111.222.333-44)<br>
+                    <strong>Observações:</strong> Paciente relatou dores no peito.<br>
+                    <strong>Exames Solicitados:</strong> Eletrocardiograma.
+                </div>
+
+                                <div class="card-atendimento pago" data-id-convenio="particular">
+                    <strong>Data:</strong> 12/11/2025<br>
+                    <strong>Paciente:</strong> João Silva (CPF: 555.555.555-55)<br>
+                    <strong>Observações:</strong> Consulta de rotina.
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../templetes/historico_medico.js"></script> 
 </body>
 </html>
