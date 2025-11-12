@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Paciente</title>
+    <link rel="stylesheet" href="paciente.css">
+    <link rel="shortcut icon" href="imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-paciente">
+            <img src="imagens/clinica.png" alt="Logo da Clínica" class="header-logo">
+            <h2>Minha Saúde</h2>
+            <button onclick="logout()" class="logout-button">Sair</button>
+        </div>
+        
+        <div class="content">
+            <h3>Olá, <span id="nomePaciente">[Nome do Paciente]</span></h3>
+            <hr>
+
+            <section class="dashboard-section">
+                <h2>Meus Exames Realizados</h2>
+                <div id="lista-exames">
+                    <div class="card-paciente">
+                        <strong>Exame:</strong> Hemograma Completo<br>
+                        <strong>Realizado em:</strong> 10/11/2025<br>
+                        <strong>Valor Final:</strong> R$ 80,00
+                    </div>
+                    <div class="card-paciente" style="border-left-color: #17a2b8;">
+                        <strong>Exame:</strong> Raio-X do Tórax<br>
+                        <strong>Realizado em:</strong> 05/10/2025<br>
+                        <strong>Valor Final:</strong> R$ 120,00
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Próximos Atendimentos</h2>
+                <div id="lista-atendimentos-paciente">
+                    <div class="card-paciente">
+                        <strong>Data:</strong> 10/11/2025
+                        <br>
+                        <strong>Médico:</strong> Dr(a). Silva [Cardiologista]
+                        <br>
+                        <strong>Observações:</strong> Paciente relatou dor de cabeça.
+                        <br>
+                        <br>
+                        <section class="acoes-rapidas">
+                            <button id="btn-agendar-consulta" class="btn-submit">
+                                Agendar Nova Consulta
+                            </button>
+                            <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">
+                                Ver Histórico de Atendimentos
+                            </button>
+                        </section>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Meus Dados Pessoais</h2>
+                <div id="dados-pessoais"">
+                    <p><strong>Nome:</strong> [Nome do Paciente]</p>
+                    <p><strong>CPF:</strong> [xxx.xxx.xxx-xx]</p>
+                    <p><strong>Email:</strong> [paciente@email.com]</p>
+                    <p><strong>Endereço:</strong> [Rua dos Testes, 123, Bairro, Cidade - ES, CEP 29000-000]</p>
+                    <p><strong>Convênio:</strong> <span id="nomeConvenio">[Nome do Convênio ou "Particular"]</span></p>
+                    <button id="btn-alterar-dados" class="submit">Alterar Dados</button>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <script src="dashboard.js"></script>
+    </body>
+</html>

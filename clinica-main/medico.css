@@ -1,0 +1,132 @@
+/* Estilos para a Área do Médico */
+
+/* Estilos base, inspirados no style.css */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* Container principal do painel */
+.dashboard-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Cabeçalho específico do médico */
+.header-medico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #0056b3; /* Azul escuro para a área médica */
+    margin-bottom: 20px;
+}
+
+.header-medico h2 {
+    color: #0056b3;
+    margin: 0;
+}
+
+.header-logo {
+    height: 100px; /* Ajusta a altura da imagem */
+    margin-right: -500px; /* Adiciona um espaço entre a logo e o título */
+}
+
+.acoes-rapidas {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.acoes-rapidas .submit {
+    width: auto; 
+    padding: 12px 20px; 
+}
+
+/* Estilo geral para botões */
+button {
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: #2526779c;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0b0b5e;
+}
+
+/* Botão de logout */
+.logout-button {
+    background-color: #dc3545; /* Vermelho para ação de sair */
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}
+
+/* Estilo para campos de input */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Garante que padding não afete a largura final */
+}
+
+.dashboard-section{
+    padding: 20px; 
+    border-radius: 8px; 
+    margin-bottom: 20px;
+}
+
+/* Seções do painel */
+.dashboard-section h2 {
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Estilo dos cards de informação */
+.card {
+    background-color: #c0cedb;
+    border-left: 5px solid #0056b3; /* Destaque azul */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .dashboard-container {
+        padding: 15px;
+    }
+
+    .header-medico {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-medico h2 {
+        margin-bottom: 10px;
+    }
+}
