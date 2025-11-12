@@ -6,7 +6,7 @@
 function logout() {
     localStorage.clear(); // Limpa tudo salvo (tipo_usuario, nome, etc.)
     alert('Você foi desconectado.');
-    window.location.href = 'index.html'; // Redireciona para o login
+    window.location.href = '../static/index.html'; // Redireciona para o login
 }
 
 /* * Adiciona os 'escutadores' de clique (event listeners)
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAlterarDados = document.getElementById('btn-alterar-dados');
     if (btnAlterarDados) { 
         btnAlterarDados.addEventListener('click', function() {
-            window.location.href = 'editar_paciente.html';
+            window.location.href = '../static/editar_paciente.html';
         });
     }
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAgendarConsulta = document.getElementById('btn-agendar-consulta');
     if (btnAgendarConsulta) {
         btnAgendarConsulta.addEventListener('click', function() {
-            window.location.href = 'agendar_consulta.html';
+            window.location.href = '../static/agendar_consulta.html';
         });
     }
 
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnVerHistorico) {
         btnVerHistorico.addEventListener('click', function() {
             // Redireciona para a nova página de histórico
-            window.location.href = 'historico_atendimentos.html';
+            window.location.href = '../static/historico_atendimentos.html';
         });
     }
 }
