@@ -149,7 +149,6 @@ def get_medicos():
         conn.close()
 
 # --- PACIENTES ---
-# Em app.py, substitua sua rota 'rota_cadastrar_paciente' por esta:
 
 @app.route('/api/cadastrar_paciente', methods=['POST'])
 def rota_cadastrar_paciente():
@@ -159,7 +158,7 @@ def rota_cadastrar_paciente():
     try:
         # Novos campos de login
         email = dados['email']
-        senha = dados['senha'] # Campo novo!
+        senha = dados['senha']
         
         # Campos de paciente
         nome = dados['nome']
@@ -404,8 +403,6 @@ def relatorio_ficha_atendimentos(id_paciente):
     finally:
         cursor.close()
         conn.close()
-
-# ... (adicionar junto com as outras rotas) ...
 
 @app.route('/api/relatorios/historico_medico/<int:id_medico>', methods=['GET'])
 def relatorio_historico_medico(id_medico):
