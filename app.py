@@ -9,10 +9,10 @@ CORS(app)
 # --- 2. Configuração da Conexão com o Banco ---
 DB_CONFIG = {
     'driver': '{ODBC Driver 17 for SQL Server}',
-    'server': 'DESKTOP-18TVE6E',        # SERVIDOR
+    'server': 'DESKTOP-18TVE6E', # SEU SERVIDOR
     'database': 'CLINICASJVI',
-    'username': 'api_login',                 # LOGIN API SQL
-    'password': 'UmaSenhaForteParaSuaAPI_123!' # SENHA API SQL
+    'username': 'api_login',
+    'password': 'UmaSenhaForteParaSuaAPI_123!' # SUA SENHA
 }
 
 def get_db_connection():
@@ -55,7 +55,6 @@ def login():
             return jsonify({'sucesso': False, 'mensagem': 'Erro ao conectar ao banco de dados.'}), 500
 
         cursor = conn.cursor()
-        # Modificado para buscar os IDs
         cursor.execute("""
             SELECT nome, tipo_usuario, id_paciente_fk, id_medico_fk 
             FROM usuarios 
@@ -84,23 +83,45 @@ def login():
 
 # --- 5. Rotas de Cadastros (CRUD) ---
 
-# --- ESPECIALIDADES ---
-@app.route('/api/especialidades', methods=['GET'])
-def get_especialidades():
+# --- ESPECIALIDADES (Admin) ---
+@app.route('/api/especialidades', methods=['GET', 'POST'])
+def handle_especialidades():
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("EXEC Especialidade_ListarTodos")
-        especialidades = rows_to_dict_list(cursor)
-        return jsonify(especialidades), 200
+        if request.method == 'GET':
+            cursor.execute("EXEC Especialidade_ListarTodos")
+            return jsonify(rows_to_dict_list(cursor)), 200
+        elif request.method == 'POST':
+            dados = request.get_json()
+            cursor.execute("EXEC Especialidade_Cadastrar @nome=?", (dados['nome'],))
+            conn.commit()
+            return jsonify({"message": "Especialidade cadastrada!"}), 201
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-# --- EXAMES ---
+@app.route('/api/especialidades/<int:id_especialidade>', methods=['DELETE'])
+def delete_especialidade(id_especialidade):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        cursor.execute("EXEC sp_Especialidade_Remover @id_especialidade=?", (id_especialidade,))
+        conn.commit()
+        return jsonify({"message": "Especialidade removida com sucesso."}), 200
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400 # Retorna erro da SP (ex: "em uso")
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# --- EXAMES (GET para listas) ---
 @app.route('/api/exames', methods=['GET'])
 def get_exames():
     conn = get_db_connection()
@@ -108,31 +129,52 @@ def get_exames():
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC Exame_ListarTodos")
-        exames = rows_to_dict_list(cursor)
-        return jsonify(exames), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-# --- CONVÊNIOS ---
-@app.route('/api/convenios', methods=['GET'])
-def get_convenios():
+# --- CONVÊNIOS (Admin) ---
+@app.route('/api/convenios', methods=['GET', 'POST'])
+def handle_convenios():
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("EXEC sp_Convenio_ListarTodos")
-        convenios = rows_to_dict_list(cursor)
-        return jsonify(convenios), 200
+        if request.method == 'GET':
+            cursor.execute("EXEC sp_Convenio_ListarTodos")
+            return jsonify(rows_to_dict_list(cursor)), 200
+        
+        elif request.method == 'POST':
+            dados = request.get_json()
+            # Parâmetros para a SP sp_Convenio_Cadastrar
+            # (Simplificado, pois o HTML não tem campos de endereço)
+            params = (
+                dados['nome'], dados['cnpj'], dados['telefone'],
+                dados.get('email', 'email@padrao.com'), # Email opcional
+                dados.get('logradouro', 'Rua Nao Informada'),
+                dados.get('numero', 'S/N'),
+                dados.get('complemento', ''),
+                dados.get('bairro', 'Bairro Nao Informado'),
+                dados.get('cidade', 'Cidade'),
+                dados.get('estado', 'ES'),
+                dados.get('cep', '00000-000')
+            )
+            cursor.execute("EXEC sp_Convenio_Cadastrar @nome=?, @cnpj=?, @telefone=?, @email=?, @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?", params)
+            conn.commit()
+            return jsonify({"message": "Convênio cadastrado!"}), 201
+            
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-# --- MÉDICOS ---
+# --- MÉDICOS (Admin) ---
 @app.route('/api/medicos', methods=['GET'])
 def get_medicos():
     conn = get_db_connection()
@@ -140,8 +182,34 @@ def get_medicos():
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Medico_ListarTodos")
-        medicos = rows_to_dict_list(cursor)
-        return jsonify(medicos), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# Rota para cadastrar novo médico (usada por cadastrar_medico.js)
+@app.route('/api/cadastrar_medico', methods=['POST'])
+def cadastrar_medico():
+    dados = request.get_json()
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        params = (
+            dados['email'], dados['senha'],
+            dados['nome'], dados['crm'], # Corrigido de crf para crm
+            dados['telefone'], dados['id_especialidade'],
+            dados['logradouro'], dados['numero'], dados['complemento'],
+            dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
+        )
+        # Chama a SP correta que cria login
+        cursor.execute("EXEC sp_Medico_Cadastrar @email=?, @senha=?, @nome=?, @crm=?, @telefone=?, @id_especialidade=?, @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?", params)
+        conn.commit()
+        return jsonify({"message": "Médico e Login criados com sucesso!"}), 201
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
@@ -149,65 +217,6 @@ def get_medicos():
         conn.close()
 
 # --- PACIENTES ---
-
-@app.route('/api/cadastrar_paciente', methods=['POST'])
-def rota_cadastrar_paciente():
-    dados = request.get_json()
-    print(f"📩 Dados recebidos: {dados}")
-
-    try:
-        # Novos campos de login
-        email = dados['email']
-        senha = dados['senha']
-        
-        # Campos de paciente
-        nome = dados['nome']
-        cpf = dados['cpf']
-        data_nascimento = dados['data_nascimento']
-        telefone = dados['telefone']
-        id_convenio = dados.get('id_convenio') or None
-        if id_convenio == "": id_convenio = None
-        
-        # Campos de endereço
-        logradouro = dados['logradouro']
-        numero = dados['numero']
-        complemento = dados['complemento']
-        bairro = dados['bairro']
-        cidade = dados['cidade']
-        estado = dados['estado']
-        cep = dados['cep']
-
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({"message": "Erro de conexão com o banco de dados"}), 500
-
-        cursor = conn.cursor()
-        
-        # A SP agora tem 15 parâmetros!
-        sql_exec = """
-            EXEC sp_Paciente_Cadastrar
-                @email=?, @senha=?,
-                @nome=?, @cpf=?, @data_nascimento=?, @telefone=?, @id_convenio=?,
-                @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?
-        """
-        cursor.execute(sql_exec, (
-            email, senha,
-            nome, cpf, data_nascimento, telefone, id_convenio,
-            logradouro, numero, complemento, bairro, cidade, estado, cep
-        ))
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        return jsonify({"message": "Paciente e Login criados com sucesso!"}), 201
-
-    except pyodbc.Error as e:
-        # Captura o erro do RAISERROR (ex: "E-mail duplicado")
-        # O e.args[1] contém a mensagem de erro vinda do SQL
-        return jsonify({"message": f"Erro do banco: {e.args[1]}"}), 400
-    except Exception as e:
-        return jsonify({"message": f"Erro: {str(e)}"}), 500
-
 @app.route('/api/pacientes', methods=['GET'])
 def get_pacientes():
     conn = get_db_connection()
@@ -215,8 +224,7 @@ def get_pacientes():
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Paciente_ListarTodos")
-        pacientes = rows_to_dict_list(cursor)
-        return jsonify(pacientes), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
@@ -245,12 +253,10 @@ def handle_paciente_by_id(id_paciente):
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
-
     try:
         if request.method == 'GET':
             cursor.execute("EXEC sp_Paciente_BuscarPorID @id_paciente=?", (id_paciente,))
             paciente = row_to_dict(cursor, cursor.fetchone())
-            
             if paciente is None:
                 return jsonify({"message": "Paciente não encontrado"}), 404
             return jsonify(paciente), 200
@@ -259,66 +265,78 @@ def handle_paciente_by_id(id_paciente):
             dados = request.get_json()
             id_convenio = dados.get('id_convenio') or None
             if id_convenio == "": id_convenio = None
-            
             params = (
                 id_paciente,
                 dados['nome'], dados['cpf'], dados['data_nascimento'], dados['telefone'], dados['email'], id_convenio,
-                dados['id_endereco'], # ID do endereço existente
+                dados['id_endereco'],
                 dados['logradouro'], dados['numero'], dados['complemento'],
                 dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
             )
-            
-            # Garante que a 'sp_Paciente_Atualizar' também exista e tenha permissão
             cursor.execute("EXEC sp_Paciente_Atualizar @id_paciente=?, @nome=?, @cpf=?, @data_nascimento=?, @telefone=?, @email=?, @id_convenio=?, @id_endereco=?, @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?", params)
             conn.commit()
             return jsonify({"message": "Dados do paciente atualizados com sucesso!"}), 200
-
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-# --- 6. Rotas de Ações da Clínica ---
+@app.route('/api/cadastrar_paciente', methods=['POST'])
+def rota_cadastrar_paciente():
+    dados = request.get_json()
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({"message": "Erro de conexão com o banco de dados"}), 500
+        
+        id_convenio = dados.get('id_convenio') or None
+        if id_convenio == "": id_convenio = None
 
+        cursor = conn.cursor()
+        sql_exec = """
+            EXEC sp_Paciente_Cadastrar
+                @email=?, @senha=?,
+                @nome=?, @cpf=?, @data_nascimento=?, @telefone=?, @id_convenio=?,
+                @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?
+        """
+        cursor.execute(sql_exec, (
+            dados['email'], dados['senha'],
+            dados['nome'], dados['cpf'], dados['data_nascimento'], dados['telefone'], id_convenio,
+            dados['logradouro'], dados['numero'], dados['complemento'], dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
+        ))
+        conn.commit()
+        return jsonify({"message": "Paciente e Login criados com sucesso!"}), 201
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
+    except Exception as e:
+        return jsonify({"message": f"Erro: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# --- 6. Rotas de Ações da Clínica ---
 @app.route('/api/atendimentos', methods=['POST'])
 def handle_atendimentos():
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
-
     try:
         dados = request.get_json()
-        
-        # --- CORREÇÃO DE TIPO (str -> int) ---
-        id_paciente_logado = int(dados['id_paciente']) 
-        id_medico = int(dados['id_medico']) # Convertendo a string '1' para o número 1
-        # --- FIM DA CORREÇÃO ---
-        
-        data_atendimento = dados['data_atendimento'] 
-        observacoes = dados['observacoes']           
-        
-        # A ordem CORRETA:
         params = (
-            id_paciente_logado, 
-            id_medico, 
-            data_atendimento,
-            observacoes
+            int(dados['id_paciente']), 
+            int(dados['id_medico']), 
+            dados['data_atendimento'], 
+            dados['observacoes']
         )
-        
-        # O debug não é mais necessário, mas pode deixar se quiser
-        print(f"DEBUG: Enviando -> {params}")
-
         cursor.execute("EXEC sp_Atendimento_Agendar @id_paciente=?, @id_medico=?, @data_atendimento=?, @observacoes=?", params)
         conn.commit()
         return jsonify({"message": "Atendimento agendado com sucesso!"}), 201
-
     except pyodbc.Error as e:
-        print(f"!!! ERRO SQL: {e.args[1]}") 
-        return jsonify({"message": f"Erro de banco de dados: {e.args[1]}"}), 500
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
-        print(f"!!! ERRO PYTHON: {str(e)}") 
-        return jsonify({"message": f"Erro inesperado: {str(e)}"}), 500
+        return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
@@ -338,21 +356,45 @@ def handle_exames_realizados():
         cursor.execute("EXEC sp_ExameRealizado_Registrar @id_paciente=?, @id_exame=?, @data_realizacao=?", params)
         conn.commit()
         return jsonify({"message": "Exame registrado com sucesso!"}), 201
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-# --- 7. Rotas de Relatórios (GET) ---
-
-@app.route('/api/relatorios/resumo_exames', methods=['GET'])
-def relatorio_resumo_exames():
+# --- 7. Rotas de Descontos (Admin) ---
+@app.route('/api/descontos', methods=['POST'])
+def handle_descontos():
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("EXEC sp_Relatorio_ResumoExames")
+        dados = request.get_json()
+        params = (
+            dados['id_exame'], 
+            dados['id_convenio'], 
+            dados['percentual_desconto']
+        )
+        cursor.execute("EXEC sp_DescontoConvenio_Definir @id_exame=?, @id_convenio=?, @percentual_desconto=?", params)
+        conn.commit()
+        return jsonify({"message": "Desconto definido com sucesso!"}), 201
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/descontos/<int:id_convenio>', methods=['GET'])
+def get_descontos_por_convenio(id_convenio):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        cursor.execute("EXEC sp_Relatorio_DescontosPorConvenio @id_convenio=?", (id_convenio,))
         dados = rows_to_dict_list(cursor)
         return jsonify(dados), 200
     except Exception as e:
@@ -361,6 +403,7 @@ def relatorio_resumo_exames():
         cursor.close()
         conn.close()
 
+# --- 8. Rotas de Relatórios (GET) ---
 @app.route('/api/relatorios/atendimentos_medico', methods=['GET'])
 def relatorio_atendimentos_medico():
     conn = get_db_connection()
@@ -368,8 +411,7 @@ def relatorio_atendimentos_medico():
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Relatorio_AtendimentosPorMedico")
-        dados = rows_to_dict_list(cursor)
-        return jsonify(dados), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
@@ -383,8 +425,7 @@ def relatorio_atendimentos_convenio():
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Relatorio_AtendimentosPorConvenio")
-        dados = rows_to_dict_list(cursor)
-        return jsonify(dados), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
@@ -398,8 +439,7 @@ def relatorio_ficha_exames(id_paciente):
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Relatorio_FichaCliente_Exames @id_paciente=?", (id_paciente,))
-        dados = rows_to_dict_list(cursor)
-        return jsonify(dados), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
@@ -413,8 +453,7 @@ def relatorio_ficha_atendimentos(id_paciente):
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Relatorio_FichaCliente_Atendimentos @id_paciente=?", (id_paciente,))
-        dados = rows_to_dict_list(cursor)
-        return jsonify(dados), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
@@ -428,75 +467,14 @@ def relatorio_historico_medico(id_medico):
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Relatorio_HistoricoPorMedico @id_medico=?", (id_medico,))
-        dados = rows_to_dict_list(cursor)
-        return jsonify(dados), 200
+        return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-
-
-# --- CADASTRAR MÉDICO ---
-@app.route('/api/cadastrar_medico', methods=['POST'])
-def cadastrar_medico():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    try:
-        # Pega o ID da especialidade já existente (vinda do front-end)
-        id_especialidade = data.get('id_especialidade')
-
-        if not id_especialidade:
-            return jsonify({"message": "É necessário selecionar uma especialidade existente."}), 400
-
-        # Cria login do médico
-        cursor.execute("""
-            INSERT INTO Login (email, senha, tipo_usuario)
-            OUTPUT INSERTED.id_login
-            VALUES (?, ?, 'medico')
-        """, data['email'], data['senha'])
-        id_login = cursor.fetchone()[0]
-
-        # Cria o registro do médico
-        cursor.execute("""
-            INSERT INTO Medico (
-                id_login, nome, cpf, crm, telefone, id_especialidade,
-                logradouro, numero, complemento, bairro, cidade, estado, cep
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            id_login,
-            data['nome'],
-            data['cpf'],
-            data['crm'],
-            data['telefone'],
-            id_especialidade,
-            data['logradouro'],
-            data['numero'],
-            data['complemento'],
-            data['bairro'],
-            data['cidade'],
-            data['estado'],
-            data['cep']
-        ))
-
-        conn.commit()
-        return jsonify({"message": "Médico e login criados com sucesso!"}), 201
-
-    except Exception as e:
-        conn.rollback()
-        print("Erro ao cadastrar médico:", e)
-        return jsonify({"message": f"Erro ao cadastrar médico: {str(e)}"}), 400
-
-    finally:
-        conn.close()
-
-
-# --- 8. Rodar o servidor ---
+# --- 9. Rodar o servidor ---
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
-    
+    # ⚠️ MUDE O 'host' para o seu IP de rede
+    app.run(host='192.168.1.14', port=5000, debug=True)

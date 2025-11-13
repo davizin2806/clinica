@@ -1,25 +1,11 @@
-const API_URL = 'http://192.168.1.14:5000'; // ⚠️ Ajuste se o IP do Flask mudar
+const API_URL = 'http://192.168.1.14:5000'; // ⚠ Troque o IP se necessário
 
 // --- Carregar Especialidades no Dropdown ---
 document.addEventListener('DOMContentLoaded', function() {
-    const selectEspecialidade = document.getElementById('especialidade');
-
     fetch(API_URL + '/api/especialidades')
-        .then(response => {
-            if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log("Especialidades recebidas:", data);
-
-            if (!Array.isArray(data) || data.length === 0) {
-                const opt = document.createElement('option');
-                opt.value = "";
-                opt.textContent = "Nenhuma especialidade cadastrada";
-                selectEspecialidade.appendChild(opt);
-                return;
-            }
-
+            const selectEspecialidade = document.getElementById('especialidade');
             data.forEach(esp => {
                 const option = document.createElement('option');
                 option.value = esp.id_especialidade;
@@ -47,7 +33,7 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
         email: document.getElementById('email').value,
         senha: senha,
 
-        // Dados do médico
+        // Médico
         nome: document.getElementById('nome').value,
         cpf: document.getElementById('cpf').value,
         crm: document.getElementById('crm').value,
@@ -64,7 +50,7 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
         cep: document.getElementById('cep').value
     };
 
-    fetch('http://192.168.1.14:5000/api/cadastrar_medico', {
+    fetch(API_URL + '/api/cadastrar_medico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosParaEnviar)
@@ -75,11 +61,11 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
 
         if (status === 201) {
             event.target.reset();
-            window.location.href = 'dashbord_adm.html'; // ou outro destino
+            window.location.href = 'dashbord_adm.html'; // redirecionamento após sucesso
         }
     })
     .catch(error => {
         console.error('Erro na requisição:', error);
         alert('Erro ao conectar com o servidor. Verifique o console.');
-    });
+    });
 });
