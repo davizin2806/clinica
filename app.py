@@ -190,31 +190,54 @@ def get_medicos():
         conn.close()
 
 # Rota para cadastrar novo médico (usada por cadastrar_medico.js)
-@app.route('/api/cadastrar_medico', methods=['POST'])
-def cadastrar_medico():
-    dados = request.get_json()
+# --- ESPECIALIDADES ---
+@app.route('/api/especialidades', methods=['GET'])
+def get_especialidades():
     conn = get_db_connection()
-    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    if conn is None: 
+        return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        params = (
-            dados['email'], dados['senha'],
-            dados['nome'], dados['crm'], # Corrigido de crf para crm
-            dados['telefone'], dados['id_especialidade'],
-            dados['logradouro'], dados['numero'], dados['complemento'],
-            dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
-        )
-        # Chama a SP correta que cria login
-        cursor.execute("EXEC sp_Medico_Cadastrar @email=?, @senha=?, @nome=?, @crm=?, @telefone=?, @id_especialidade=?, @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?", params)
-        conn.commit()
-        return jsonify({"message": "Médico e Login criados com sucesso!"}), 201
-    except pyodbc.Error as e:
-        return jsonify({"message": f"{e.args[1]}"}), 400
+        # Só garante que chama a SP correta e retorna as colunas padrão
+        cursor.execute("EXEC sp_Especialidade_ListarTodos")
+        especialidades = rows_to_dict_list(cursor)
+        return jsonify(especialidades), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
+
+
+# --- CADASTRAR MÉDICO ---
+@app.route('/api/cadastrar_medico', methods=['POST'])
+def cadastrar_medico():
+    dados = request.get_json()
+    conn = get_db_connection()
+    if conn is None: 
+        return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            EXEC sp_Medico_Cadastrar 
+                @email=?, @senha=?, 
+                @nome=?, @crm=?, @telefone=?, @id_especialidade=?, 
+                @logradouro=?, @numero=?, @complemento=?, 
+                @bairro=?, @cidade=?, @estado=?, @cep=?
+        """, (
+            dados['email'], dados['senha'], 
+            dados['nome'], dados['crm'], dados['telefone'], dados['id_especialidade'],
+            dados['logradouro'], dados['numero'], dados['complemento'],
+            dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
+        ))
+        conn.commit()
+        return jsonify({"message": "Médico cadastrado com sucesso!"}), 201
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # --- PACIENTES ---
 @app.route('/api/pacientes', methods=['GET'])

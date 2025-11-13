@@ -2,18 +2,19 @@ const API_URL = 'http://192.168.1.14:5000'; // ⚠ Troque o IP se necessário
 
 // --- Carregar Especialidades no Dropdown ---
 document.addEventListener('DOMContentLoaded', function() {
-    fetch(API_URL + '/api/especialidades')
+        fetch(API_URL + '/api/especialidades')
         .then(response => response.json())
         .then(data => {
             const selectEspecialidade = document.getElementById('especialidade');
             data.forEach(esp => {
                 const option = document.createElement('option');
-                option.value = esp.id_especialidade;
+                option.value = esp.id_especialidade;  // ⚠️ precisa que sua SP retorne esse nome
                 option.textContent = esp.nome;
                 selectEspecialidade.appendChild(option);
             });
         })
         .catch(error => console.error('Erro ao carregar especialidades:', error));
+
 });
 
 // --- Enviar Formulário (POST) ---
