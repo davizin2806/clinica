@@ -1,4 +1,4 @@
-// templetes/novo_atendimento.js
+// templates/novo_atendimento.js
 document.addEventListener("DOMContentLoaded", () => {
     
     const API_URL = 'http://172.20.12.151:5000'; // ⚠️ MUDE SE O IP MUDAR
