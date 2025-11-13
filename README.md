@@ -10,7 +10,7 @@ Agora a segunda parte do projeto busca criar de fato o sistema, com a criação 
 
 ## Descrição das pastas / arquivos
 
-- BackSQL - Backup do banco de dados
+- BackSQL - Arquivos relacionados com o Banco de Dados
 - Imagens - Icones e imagens utilizadas no site
 - Static - Todos os arquivos HTML/páginas do site
 - Templates - Todos os arquivos CSS e JS de cada página do site
