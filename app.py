@@ -92,11 +92,11 @@ def handle_especialidades():
     try:
         if request.method == 'GET':
             # CORREÇÃO AQUI: Adicionado 'sp_'
-            cursor.execute("EXEC sp_Especialidade_ListarTodos") 
+            cursor.execute("EXEC Especialidade_ListarTodos") 
             return jsonify(rows_to_dict_list(cursor)), 200
         elif request.method == 'POST':
             dados = request.get_json()
-            cursor.execute("EXEC sp_Especialidade_Cadastrar @nome=?", (dados['nome'],))
+            cursor.execute("EXEC Especialidade_Cadastrar @nome=?", (dados['nome'],))
             conn.commit()
             return jsonify({"message": "Especialidade cadastrada!"}), 201
     except pyodbc.Error as e:
@@ -133,7 +133,7 @@ def get_exames():
     cursor = conn.cursor()
     try:
         # CORREÇÃO AQUI: Adicionado 'sp_'
-        cursor.execute("EXEC sp_Exame_ListarTodos") 
+        cursor.execute("EXEC Exame_ListarTodos") 
         return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
