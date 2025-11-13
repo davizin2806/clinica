@@ -1,0 +1,111 @@
+/* Estilos para o Dashboard do Admin, baseados no medico.css */
+
+/* Estilos base */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF);
+    background-color: #ffffff; /* Fundo branco para a página inteira */
+    margin: 0;
+    color: #333;
+    min-height: 100vh; /* Garante que o corpo ocupe a altura total da tela */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container principal do painel */
+.dashboard-container {
+    max-width: 900px;
+    margin: 20px auto  ;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 20px 40px; /* Adiciona um espaçamento lateral */
+    box-sizing: border-box; /* Garante que o padding não afete a largura */
+    flex-grow: 1; /* Faz o container crescer para ocupar o espaço */
+}
+
+/* Cabeçalho específico do admin */
+.header-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #343a40; /* Cinza escuro para a área do admin */
+    margin-bottom: 20px;
+}
+
+.header-admin h2 {
+    color: #343a40;
+    margin: 0;
+}
+
+/* Estilo geral para botões */
+button {
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: #2526779c;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0b0b5e;
+}
+
+/* Botão de logout */
+.logout-button {
+    background-color: #dc3545; /* Vermelho para ação de sair */
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}
+
+/* Grid de opções */
+.grid-opcoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Estilo dos cards de ação */
+.card-acao {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-left: 5px solid #343a40; /* Destaque cinza escuro */
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card-acao:hover {
+    border-color: #0056b3;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.card-acao h3 {
+    margin-top: 0;
+    color: #0056b3;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .header-admin {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .header-admin h2 {
+        margin-bottom: 10px;
+    }
+}

@@ -1,0 +1,149 @@
+/* Estilos para a página Gerenciar Convênios, baseados no dashboard_medico.css e dashboard_admin.css */
+
+/* Estilos base */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF); /* Fundo gradiente do medico.css */
+    margin: 0;
+    padding: 20px; /* Adiciona espaçamento ao redor do container */
+    color: #333;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Container principal */
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Efeito de caixa do medico.css */
+    box-sizing: border-box;
+}
+
+/* Cabeçalho do admin */
+.header-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #0056b3; /* Azul da área médica */
+    margin-bottom: 30px;
+}
+
+.header-admin h2 {
+    color: #0056b3; /* Azul da área médica */
+    margin: 0;
+}
+
+/* Botão de Voltar no cabeçalho */
+.btn-voltar {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #6c757d; /* Cinza para ação secundária */
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-voltar:hover {
+    background-color: #5a6268;
+}
+
+/* Estilo para as seções do formulário */
+.form-section {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    color: #0056b3; /* Azul para os títulos da seção */
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para inputs, selects e labels */
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+/* Botão de salvar */
+.btn-salvar {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745; /* Verde para salvar */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-salvar:hover {
+    background-color: #218838;
+}
+
+/* Tabela de descontos */
+.matriz-descontos table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.matriz-descontos th,
+.matriz-descontos td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.matriz-descontos th {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.matriz-descontos .input-desconto {
+    width: 80px;
+    padding: 8px;
+    text-align: center;
+}
+
+.matriz-descontos .preco-final {
+    font-weight: bold;
+    color: #0056b3; /* Azul para destaque */
+    font-size: 1.1em;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+
+    .header-admin {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}

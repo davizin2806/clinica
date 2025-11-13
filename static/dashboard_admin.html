@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="../templates/dashboard_admin.css"> 
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-admin">
+            <h2>Painel de Controle</h2>
+            <button class="logout-button">Sair</button>
+        </div>
+        
+        <div class="content">
+            <h3>Gerenciamento da Clínica</h3>
+            <p>Selecione uma das opções abaixo para gerenciar os cadastros do sistema.</p>
+            <hr>
+            
+            <div class="grid-opcoes">
+                <div id="btn-cadastrar-paciente" class="card-acao">
+                    <h3>👤 Cadastrar Paciente</h3>
+                    <p>Adicionar um novo paciente ao sistema.</p>
+                </div>
+
+                <div id="btn-cadastrar-medico" class="card-acao">
+                    <h3>👨‍⚕️ Cadastrar Médico</h3>
+                    <p>Adicionar um novo profissional médico.</p>
+                </div>
+
+                <div id="btn-gerenciar-convenios" class="card-acao">
+                    <h3>💳 Gerenciar Convênios</h3>
+                    <p>Adicionar ou editar convênios e descontos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../templates/dashboard_admin.js"></script> 
+</body>
+</html>
