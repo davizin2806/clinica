@@ -9,10 +9,10 @@ CORS(app)
 # --- 2. Configuração da Conexão com o Banco ---
 DB_CONFIG = {
     'driver': '{ODBC Driver 17 for SQL Server}',
-    'server': 'DESKTOP-18TVE6E',        # SEU SERVIDOR
+    'server': 'DESKTOP-18TVE6E',        # SERVIDOR
     'database': 'CLINICASJVI',
-    'username': 'api_login',                 # SEU LOGIN SQL
-    'password': 'UmaSenhaForteParaSuaAPI_123!' # SUA SENHA SQL
+    'username': 'api_login',                 # LOGIN API SQL
+    'password': 'UmaSenhaForteParaSuaAPI_123!' # SENHA API SQL
 }
 
 def get_db_connection():
