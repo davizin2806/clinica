@@ -286,19 +286,39 @@ def handle_atendimentos():
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
+
     try:
         dados = request.get_json()
+        
+        # --- CORREÇÃO DE TIPO (str -> int) ---
+        id_paciente_logado = int(dados['id_paciente']) 
+        id_medico = int(dados['id_medico']) # Convertendo a string '1' para o número 1
+        # --- FIM DA CORREÇÃO ---
+        
+        data_atendimento = dados['data_atendimento'] 
+        observacoes = dados['observacoes']           
+        
+        # A ordem CORRETA:
         params = (
-            dados['id_paciente'], 
-            dados['id_medico'], 
-            dados['data_atendimento'], 
-            dados['observacoes']
+            id_paciente_logado, 
+            id_medico, 
+            data_atendimento,
+            observacoes
         )
+        
+        # O debug não é mais necessário, mas pode deixar se quiser
+        print(f"DEBUG: Enviando -> {params}")
+
         cursor.execute("EXEC sp_Atendimento_Agendar @id_paciente=?, @id_medico=?, @data_atendimento=?, @observacoes=?", params)
         conn.commit()
         return jsonify({"message": "Atendimento agendado com sucesso!"}), 201
+
+    except pyodbc.Error as e:
+        print(f"!!! ERRO SQL: {e.args[1]}") 
+        return jsonify({"message": f"Erro de banco de dados: {e.args[1]}"}), 500
     except Exception as e:
-        return jsonify({"message": str(e)}), 500
+        print(f"!!! ERRO PYTHON: {str(e)}") 
+        return jsonify({"message": f"Erro inesperado: {str(e)}"}), 500
     finally:
         cursor.close()
         conn.close()

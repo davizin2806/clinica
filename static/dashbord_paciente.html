@@ -20,25 +20,31 @@
             <hr>
 
             <section class="dashboard-section">
+                <h2>Meus Dados Pessoais</h2>
+                <div id="dados-pessoais">
+                    <p>Carregando dados...</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Próximos Atendimentos</h2>
+                <div id="lista-atendimentos-futuros"> <p>Carregando atendimentos...</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Histórico de Atendimentos</h2>
+                <div id="lista-atendimentos-passados"> <p>Carregando histórico...</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
                 <h2>Meus Exames Realizados</h2>
                 <div id="lista-exames">
                     <p>Carregando exames...</p>
                 </div>
             </section>
 
-            <section class="dashboard-section">
-                <h2>Próximos Atendimentos</h2>
-                <div id="lista-atendimentos-paciente">
-                    <p>Carregando atendimentos...</p>
-                </div>
-            </section>
-
-            <section class="dashboard-section">
-                <h2>Meus Dados Pessoais</h2>
-                <div id="dados-pessoais">
-                    <p>Carregando dados...</p>
-                </div>
-            </section>
         </div>
     </div>
     
@@ -46,6 +52,7 @@
     
     <script>
         const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+        const agora = new Date(); // Pega a data/hora atual
 
         document.addEventListener('DOMContentLoaded', function() {
             
@@ -64,12 +71,12 @@
                 return;
             }
 
-            // --- 1. Buscar Exames do Paciente ---
+            // --- 1. Buscar Exames (Sem mudança) ---
             const containerExames = document.getElementById('lista-exames');
             fetch(`${API_URL}/api/relatorios/ficha_exames/${pacienteId}`)
                 .then(response => response.json())
                 .then(data => {
-                    containerExames.innerHTML = ''; // Limpa o "Carregando..."
+                    containerExames.innerHTML = ''; 
                     if (data.length === 0) {
                         containerExames.innerHTML = '<p>Nenhum exame encontrado.</p>';
                         return;
@@ -92,45 +99,71 @@
                     containerExames.innerHTML = '<p>Erro ao carregar exames.</p>';
                 });
 
-            // --- 2. Buscar Atendimentos do Paciente ---
-            const containerAtendimentos = document.getElementById('lista-atendimentos-paciente');
+            // --- 2. Buscar TODOS os Atendimentos (e separar com JS) ---
+            const containerFuturos = document.getElementById('lista-atendimentos-futuros');
+            const containerPassados = document.getElementById('lista-atendimentos-passados');
+            
             fetch(`${API_URL}/api/relatorios/ficha_atendimentos/${pacienteId}`)
                 .then(response => response.json())
                 .then(data => {
-                    containerAtendimentos.innerHTML = ''; // Limpa o "Carregando..."
-                    if (data.length === 0) {
-                        containerAtendimentos.innerHTML = '<p>Nenhum atendimento encontrado.</p>';
-                    }
+                    containerFuturos.innerHTML = ''; // Limpa o "Carregando..."
+                    containerPassados.innerHTML = ''; // Limpa o "Carregando..."
+                    
+                    let achouFuturo = false;
+                    let achouPassado = false;
+
                     data.forEach(atendimento => {
+                        const dataAtendimento = new Date(atendimento.data_atendimento);
                         const card = document.createElement('div');
                         card.className = 'card-paciente';
-                        const dataFormatada = new Date(atendimento.data_atendimento).toLocaleString('pt-BR');
+                        const dataFormatada = dataAtendimento.toLocaleString('pt-BR');
+                        
                         card.innerHTML = `
                             <strong>Data:</strong> ${dataFormatada}<br>
                             <strong>Médico:</strong> ${atendimento.NomeMedico} [${atendimento.Especialidade}]<br>
                             <strong>Observações:</strong> ${atendimento.observacoes}
                         `;
-                        containerAtendimentos.appendChild(card);
+                        
+                        // --- AQUI ESTÁ A LÓGICA DE SEPARAÇÃO ---
+                        if (dataAtendimento >= agora) {
+                            // É FUTURO
+                            containerFuturos.appendChild(card);
+                            achouFuturo = true;
+                        } else {
+                            // É PASSADO
+                            containerPassados.appendChild(card);
+                            achouPassado = true;
+                        }
                     });
+
+                    // Mensagens de "Nenhum encontrado"
+                    if (!achouFuturo) {
+                        containerFuturos.innerHTML = '<p>Nenhum atendimento futuro agendado.</p>';
+                    }
+                    if (!achouPassado) {
+                        containerPassados.innerHTML = '<p>Nenhum atendimento anterior encontrado.</p>';
+                    }
                     
-                    // Adiciona os botões de ação (do seu HTML original)
+                    // Adiciona os botões de ação (só na seção de futuros)
                     const acoes = document.createElement('section');
                     acoes.className = 'acoes-rapidas';
                     acoes.innerHTML = `
                         <button id="btn-agendar-consulta" class="btn-submit">Agendar Nova Consulta</button>
-                        <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">Ver Histórico</button>
+                        <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">Ver Histórico (Página Separada)</button>
                     `;
-                    containerAtendimentos.appendChild(acoes);
+                    containerFuturos.appendChild(acoes);
+                    
                     // Re-ativa os botões do dashboard.js
                     document.getElementById('btn-agendar-consulta').addEventListener('click', () => window.location.href = 'agendar_consulta.html');
                     document.getElementById('btn-ver-historico').addEventListener('click', () => window.location.href = 'historico_atendimentos.html');
                 })
                 .catch(error => {
                     console.error('Erro ao buscar atendimentos:', error);
-                    containerAtendimentos.innerHTML = '<p>Erro ao carregar atendimentos.</p>';
+                    containerFuturos.innerHTML = '<p>Erro ao carregar atendimentos.</p>';
+                    containerPassados.innerHTML = '<p>Erro ao carregar histórico.</p>';
                 });
 
-            // --- 3. Buscar Dados Pessoais do Paciente ---
+            // --- 3. Buscar Dados Pessoais (Sem mudança) ---
             const containerDados = document.getElementById('dados-pessoais');
             fetch(`${API_URL}/api/pacientes/${pacienteId}`)
                 .then(response => response.json())
