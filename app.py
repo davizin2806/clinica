@@ -446,13 +446,11 @@ def cadastrar_medico():
     cursor = conn.cursor()
 
     try:
+        # Pega o ID da especialidade já existente (vinda do front-end)
         id_especialidade = data.get('id_especialidade')
-        nova_especialidade = data.get('nova_especialidade')
 
-        # Se uma nova especialidade for informada, cria no banco
-        if nova_especialidade:
-            cursor.execute("INSERT INTO Especialidade (nome) OUTPUT INSERTED.id_especialidade VALUES (?)", nova_especialidade)
-            id_especialidade = cursor.fetchone()[0]
+        if not id_especialidade:
+            return jsonify({"message": "É necessário selecionar uma especialidade existente."}), 400
 
         # Cria login do médico
         cursor.execute("""
@@ -462,23 +460,40 @@ def cadastrar_medico():
         """, data['email'], data['senha'])
         id_login = cursor.fetchone()[0]
 
-        # Cria o médico
+        # Cria o registro do médico
         cursor.execute("""
-            INSERT INTO Medico (id_login, nome, cpf, crm, telefone, id_especialidade, logradouro, numero, complemento, bairro, cidade, estado, cep)
+            INSERT INTO Medico (
+                id_login, nome, cpf, crm, telefone, id_especialidade,
+                logradouro, numero, complemento, bairro, cidade, estado, cep
+            )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, id_login, data['nome'], data['cpf'], data['crm'], data['telefone'], id_especialidade,
-             data['logradouro'], data['numero'], data['complemento'], data['bairro'],
-             data['cidade'], data['estado'], data['cep'])
+        """, (
+            id_login,
+            data['nome'],
+            data['cpf'],
+            data['crm'],
+            data['telefone'],
+            id_especialidade,
+            data['logradouro'],
+            data['numero'],
+            data['complemento'],
+            data['bairro'],
+            data['cidade'],
+            data['estado'],
+            data['cep']
+        ))
 
         conn.commit()
         return jsonify({"message": "Médico e login criados com sucesso!"}), 201
 
     except Exception as e:
         conn.rollback()
-        return jsonify({"message": f"Erro: {str(e)}"}), 400
+        print("Erro ao cadastrar médico:", e)
+        return jsonify({"message": f"Erro ao cadastrar médico: {str(e)}"}), 400
 
     finally:
         conn.close()
+
 
 # --- 8. Rodar o servidor ---
 if __name__ == '__main__':
