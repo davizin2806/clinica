@@ -91,19 +91,23 @@ def handle_especialidades():
     cursor = conn.cursor()
     try:
         if request.method == 'GET':
-            cursor.execute("EXEC Especialidade_ListarTodos")
+            # CORREÇÃO AQUI: Adicionado 'sp_'
+            cursor.execute("EXEC sp_Especialidade_ListarTodos") 
             return jsonify(rows_to_dict_list(cursor)), 200
         elif request.method == 'POST':
             dados = request.get_json()
-            cursor.execute("EXEC Especialidade_Cadastrar @nome=?", (dados['nome'],))
+            cursor.execute("EXEC sp_Especialidade_Cadastrar @nome=?", (dados['nome'],))
             conn.commit()
             return jsonify({"message": "Especialidade cadastrada!"}), 201
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
+# ROTA NOVA (para Admin)
 @app.route('/api/especialidades/<int:id_especialidade>', methods=['DELETE'])
 def delete_especialidade(id_especialidade):
     conn = get_db_connection()
@@ -128,7 +132,8 @@ def get_exames():
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("EXEC Exame_ListarTodos")
+        # CORREÇÃO AQUI: Adicionado 'sp_'
+        cursor.execute("EXEC sp_Exame_ListarTodos") 
         return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
@@ -148,12 +153,11 @@ def handle_convenios():
             return jsonify(rows_to_dict_list(cursor)), 200
         
         elif request.method == 'POST':
+            # ROTA NOVA (para Admin)
             dados = request.get_json()
-            # Parâmetros para a SP sp_Convenio_Cadastrar
-            # (Simplificado, pois o HTML não tem campos de endereço)
             params = (
                 dados['nome'], dados['cnpj'], dados['telefone'],
-                dados.get('email', 'email@padrao.com'), # Email opcional
+                dados.get('email', 'email@padrao.com'),
                 dados.get('logradouro', 'Rua Nao Informada'),
                 dados.get('numero', 'S/N'),
                 dados.get('complemento', ''),
@@ -189,55 +193,32 @@ def get_medicos():
         cursor.close()
         conn.close()
 
-# Rota para cadastrar novo médico (usada por cadastrar_medico.js)
-# --- ESPECIALIDADES ---
-@app.route('/api/especialidades', methods=['GET'])
-def get_especialidades():
-    conn = get_db_connection()
-    if conn is None: 
-        return jsonify({"message": "Erro de conexão"}), 500
-    cursor = conn.cursor()
-    try:
-        # Só garante que chama a SP correta e retorna as colunas padrão
-        cursor.execute("EXEC sp_Especialidade_ListarTodos")
-        especialidades = rows_to_dict_list(cursor)
-        return jsonify(especialidades), 200
-    except Exception as e:
-        return jsonify({"message": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
-
-
-# --- CADASTRAR MÉDICO ---
+# ROTA NOVA (para Admin)
 @app.route('/api/cadastrar_medico', methods=['POST'])
 def cadastrar_medico():
-    dados = request.get_json()
+    dados = request.json
     conn = get_db_connection()
-    if conn is None: 
-        return jsonify({"message": "Erro de conexão"}), 500
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("""
-            EXEC sp_Medico_Cadastrar 
-                @email=?, @senha=?, 
-                @nome=?, @crm=?, @telefone=?, @id_especialidade=?, 
-                @logradouro=?, @numero=?, @complemento=?, 
-                @bairro=?, @cidade=?, @estado=?, @cep=?
-        """, (
-            dados['email'], dados['senha'], 
-            dados['nome'], dados['crm'], dados['telefone'], dados['id_especialidade'],
+        params = (
+            dados['email'], dados['senha'],
+            dados['nome'], dados['crm'], 
+            dados['telefone'], dados['id_especialidade'],
             dados['logradouro'], dados['numero'], dados['complemento'],
             dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
-        ))
+        )
+        # Chama a SP correta que cria login
+        cursor.execute("EXEC sp_Medico_Cadastrar @email=?, @senha=?, @nome=?, @crm=?, @telefone=?, @id_especialidade=?, @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?", params)
         conn.commit()
-        return jsonify({"message": "Médico cadastrado com sucesso!"}), 201
+        return jsonify({"message": "Médico e Login criados com sucesso!"}), 201
+    except pyodbc.Error as e:
+        return jsonify({"message": f"{e.args[1]}"}), 400
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
-
 
 # --- PACIENTES ---
 @app.route('/api/pacientes', methods=['GET'])
@@ -426,6 +407,7 @@ def get_descontos_por_convenio(id_convenio):
         cursor.close()
         conn.close()
 
+
 # --- 8. Rotas de Relatórios (GET) ---
 @app.route('/api/relatorios/atendimentos_medico', methods=['GET'])
 def relatorio_atendimentos_medico():
@@ -500,4 +482,4 @@ def relatorio_historico_medico(id_medico):
 # --- 9. Rodar o servidor ---
 if __name__ == '__main__':
     # ⚠️ MUDE O 'host' para o seu IP de rede
-    app.run(host='192.168.1.14', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
