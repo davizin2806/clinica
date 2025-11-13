@@ -3,59 +3,60 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastrar Novo Paciente</title>
-    <link rel="stylesheet" href="../templates/cadastrar_paciente.css" /> 
+    <title>Cadastrar Novo Médico</title>
+    <link rel="stylesheet" href="../templates/cadastrar_medico.css" /> 
     <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
-    <style>
-        .input_box label.static_label { color: #333; font-weight: bold; margin-bottom: 5px; display: block; }
-        .input_box input[type="date"], .input_box select, .input_box .input_user { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #f9f9f9; font-size: 15px; box-sizing: border-box; }
-        .input_box .label_input { display: none; } /* O CSS original tem um bug de sobreposição */
-    </style>
 </head>
 <body>
     <div class="box">
-        <form id="formCadastrarPaciente">
+        <form id="formCadastrarMedico">
             <fieldset>
-                <legend>Cadastrar Novo Paciente</legend>
+                <legend>Cadastrar Novo Médico</legend>
 
                 <div class="input_box">
-                    <label for="email" class="static_label">Email (para o paciente logar):</label>
+                    <label for="email" class="static_label">Email (para o médico logar):</label>
                     <input type="email" id="email" name="email" class="input_user" required />
                 </div>
                 <div class="input_box">
-                    <label for="senha" class="static_label">Senha (para o paciente logar):</label>
+                    <label for="senha" class="static_label">Senha (para o médico logar):</label>
                     <input type="password" id="senha" name="senha" class="input_user" required />
                 </div>
                 <div class="input_box">
                     <label for="confirmar_senha" class="static_label">Confirmar Senha:</label>
                     <input type="password" id="confirmar_senha" name="confirmar_senha" class="input_user" required />
                 </div>
+
                 <hr>
 
                 <div class="input_box">
                     <label for="nome" class="static_label">Nome Completo:</label>
                     <input type="text" id="nome" name="nome" class="input_user" required />
                 </div>
+
                 <div class="input_box">
                     <label for="cpf" class="static_label">CPF:</label>
                     <input type="text" id="cpf" name="cpf" class="input_user" required />
                 </div>
+
                 <div class="input_box">
-                    <label for="data_nascimento" class="static_label">Data de Nascimento:</label>
-                    <input type="date" id="data_nascimento" name="data_nascimento" required />
+                    <label for="crf" class="static_label">CRF (Registro Profissional):</label>
+                    <input type="text" id="crf" name="crf" class="input_user" required />
                 </div>
+
                 <div class="input_box">
                     <label for="telefone" class="static_label">Telefone:</label>
                     <input type="text" id="telefone" name="telefone" class="input_user" />
                 </div>
+
                 <div class="input_box">
-                    <label for="convenio" class="static_label">Convênio do Paciente:</label>
-                    <select id="convenio" name="convenio">
-                        <option value="">Nenhum / Particular</option>
-                        </select>
+                    <label for="especialidade" class="static_label">Especialidade:</label>
+                    <select id="especialidade" name="especialidade" required>
+                        <option value="">Selecione uma especialidade</option>
+                    </select>
                 </div>
+
                 <hr>
-                
+
                 <div class="input_box">
                     <label for="cep" class="static_label">CEP:</label>
                     <input type="text" id="cep" name="cep" class="input_user" required />
@@ -86,12 +87,11 @@
                 </div>
 
                 <input type="submit" class="btn-submit" value="Salvar Cadastro" />
-                <a href="dashbord_medico.html" class="btn-cancel">Cancelar e Voltar</a>
+                <a href="../templates/dashboard_admin" class="btn-cancel">Cancelar e Voltar</a>
             </fieldset>
         </form>
     </div>
 
-    <script src="../templates/cadastrar_paciente.js" ></script>
-
+    <script src="../tamplates/cadastrar_paciente.js"></script>
 </body>
 </html>

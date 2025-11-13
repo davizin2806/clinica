@@ -415,7 +415,59 @@ def relatorio_historico_medico(id_medico):
     finally:
         cursor.close()
         conn.close()
+@app.route('/api/especialidades', methods=['GET'])
+def listar_especialidades():
+    conn = conexao_bd()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id_especialidade, nome FROM Especialidade")
+    especialidades = [{'id_especialidade': row[0], 'nome': row[1]} for row in cursor.fetchall()]
+    conn.close()
+    return jsonify(especialidades)
+
+# --- CADASTRAR MÉDICO ---
+@app.route('/api/cadastrar_medico', methods=['POST'])
+def cadastrar_medico():
+    data = request.json
+    conn = conexao_bd()
+    cursor = conn.cursor()
+
+    try:
+        id_especialidade = data.get('id_especialidade')
+        nova_especialidade = data.get('nova_especialidade')
+
+        # Se uma nova especialidade for informada, cria no banco
+        if nova_especialidade:
+            cursor.execute("INSERT INTO Especialidade (nome) OUTPUT INSERTED.id_especialidade VALUES (?)", nova_especialidade)
+            id_especialidade = cursor.fetchone()[0]
+
+        # Cria login do médico
+        cursor.execute("""
+            INSERT INTO Login (email, senha, tipo_usuario)
+            OUTPUT INSERTED.id_login
+            VALUES (?, ?, 'medico')
+        """, data['email'], data['senha'])
+        id_login = cursor.fetchone()[0]
+
+        # Cria o médico
+        cursor.execute("""
+            INSERT INTO Medico (id_login, nome, cpf, crm, telefone, id_especialidade, logradouro, numero, complemento, bairro, cidade, estado, cep)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, id_login, data['nome'], data['cpf'], data['crm'], data['telefone'], id_especialidade,
+             data['logradouro'], data['numero'], data['complemento'], data['bairro'],
+             data['cidade'], data['estado'], data['cep'])
+
+        conn.commit()
+        return jsonify({"message": "Médico e login criados com sucesso!"}), 201
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"message": f"Erro: {str(e)}"}), 400
+
+    finally:
+        conn.close()
 
 # --- 8. Rodar o servidor ---
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+    

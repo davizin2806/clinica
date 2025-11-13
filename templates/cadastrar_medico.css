@@ -1,0 +1,157 @@
+/* Estilos para a página de Cadastro de Médico (baseados no paciente) */
+
+/* --- Corpo da página --- */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* --- Container principal do formulário --- */
+.box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 500px;
+}
+
+/* --- Formulário --- */
+form {
+    width: 100%;
+}
+
+fieldset {
+    border: none;
+}
+
+/* --- Título / Legend --- */
+legend {
+    border: 1px solid #0056b3;
+    padding: 10px;
+    text-align: center;
+    background-color: #0056b3;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2em;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+/* --- Inputs e Labels --- */
+.input_box {
+    position: relative;
+    margin: 25px 0;
+}
+
+.input_box label.static_label {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.input_box input[type="date"],
+.input_box select,
+.input_box .input_user {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+/* --- Input flutuante (padrão mantido para compatibilidade) --- */
+.input_user {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #555;
+    outline: none;
+    color: #333;
+    font-size: 15px;
+    width: 100%;
+    letter-spacing: 1px;
+}
+
+.label_input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    transition: .5s;
+    color: #555;
+}
+
+.input_user:focus ~ .label_input,
+.input_user:valid ~ .label_input {
+    top: -20px;
+    font-size: 12px;
+    color: #0056b3;
+}
+
+/* --- Botões --- */
+.btn-submit,
+.btn-cancel {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    font-size: 15px;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+}
+
+/* Botão de salvar */
+.btn-submit {
+    background-color: #007bff;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+/* Botão de cancelar */
+.btn-cancel {
+    display: block;
+    background-color: #e96a6e;
+    margin-top: 10px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #c04b4b;
+}
+
+/* --- Linha divisória --- */
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 600px) {
+    .box {
+        padding: 20px;
+        max-width: 90%;
+    }
+
+    legend {
+        font-size: 1em;
+    }
+}
