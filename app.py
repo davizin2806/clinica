@@ -9,10 +9,10 @@ CORS(app)
 # --- 2. Configuração da Conexão com o Banco ---
 DB_CONFIG = {
     'driver': '{ODBC Driver 17 for SQL Server}',
-    'server': 'DESKTOP-18TVE6E',        # SEU SERVIDOR
+    'server': 'DESKTOP-18TVE6E',        # SERVIDOR
     'database': 'CLINICASJVI',
-    'username': 'api_login',                 # SEU LOGIN SQL
-    'password': 'UmaSenhaForteParaSuaAPI_123!' # SUA SENHA SQL
+    'username': 'api_login',                 # LOGIN API SQL
+    'password': 'UmaSenhaForteParaSuaAPI_123!' # SENHA API SQL
 }
 
 def get_db_connection():
@@ -42,7 +42,7 @@ def row_to_dict(cursor, row):
     columns = [column[0] for column in cursor.description]
     return dict(zip(columns, row))
 
-# --- 4. Rota de Login (Melhorada) ---
+# --- 4. Rota de Login ---
 @app.route('/api/login', methods=['POST'])
 def login():
     dados = request.get_json()
@@ -91,7 +91,7 @@ def get_especialidades():
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("EXEC sp_Especialidade_ListarTodos")
+        cursor.execute("EXEC Especialidade_ListarTodos")
         especialidades = rows_to_dict_list(cursor)
         return jsonify(especialidades), 200
     except Exception as e:
@@ -107,7 +107,7 @@ def get_exames():
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
     try:
-        cursor.execute("EXEC sp_Exame_ListarTodos")
+        cursor.execute("EXEC Exame_ListarTodos")
         exames = rows_to_dict_list(cursor)
         return jsonify(exames), 200
     except Exception as e:
@@ -149,7 +149,6 @@ def get_medicos():
         conn.close()
 
 # --- PACIENTES ---
-# Em app.py, substitua sua rota 'rota_cadastrar_paciente' por esta:
 
 @app.route('/api/cadastrar_paciente', methods=['POST'])
 def rota_cadastrar_paciente():
@@ -159,7 +158,7 @@ def rota_cadastrar_paciente():
     try:
         # Novos campos de login
         email = dados['email']
-        senha = dados['senha'] # Campo novo!
+        senha = dados['senha']
         
         # Campos de paciente
         nome = dados['nome']
@@ -246,21 +245,17 @@ def handle_paciente_by_id(id_paciente):
     conn = get_db_connection()
     if conn is None: return jsonify({"message": "Erro de conexão"}), 500
     cursor = conn.cursor()
+
     try:
         if request.method == 'GET':
-            # Busca paciente e endereço por ID
-            cursor.execute("""
-                SELECT p.*, e.* FROM Paciente p 
-                JOIN Endereco e ON p.id_endereco = e.id_endereco 
-                WHERE p.id_paciente = ?
-            """, (id_paciente,))
+            cursor.execute("EXEC sp_Paciente_BuscarPorID @id_paciente=?", (id_paciente,))
             paciente = row_to_dict(cursor, cursor.fetchone())
+            
             if paciente is None:
                 return jsonify({"message": "Paciente não encontrado"}), 404
             return jsonify(paciente), 200
 
         elif request.method == 'PUT':
-            # Atualiza paciente
             dados = request.get_json()
             id_convenio = dados.get('id_convenio') or None
             if id_convenio == "": id_convenio = None
@@ -272,7 +267,8 @@ def handle_paciente_by_id(id_paciente):
                 dados['logradouro'], dados['numero'], dados['complemento'],
                 dados['bairro'], dados['cidade'], dados['estado'], dados['cep']
             )
-            # Garanta que sp_Paciente_Atualizar existe no seu banco!
+            
+            # Garante que a 'sp_Paciente_Atualizar' também exista e tenha permissão
             cursor.execute("EXEC sp_Paciente_Atualizar @id_paciente=?, @nome=?, @cpf=?, @data_nascimento=?, @telefone=?, @email=?, @id_convenio=?, @id_endereco=?, @logradouro=?, @numero=?, @complemento=?, @bairro=?, @cidade=?, @estado=?, @cep=?", params)
             conn.commit()
             return jsonify({"message": "Dados do paciente atualizados com sucesso!"}), 200
@@ -404,8 +400,6 @@ def relatorio_ficha_atendimentos(id_paciente):
     finally:
         cursor.close()
         conn.close()
-
-# ... (adicionar junto com as outras rotas) ...
 
 @app.route('/api/relatorios/historico_medico/<int:id_medico>', methods=['GET'])
 def relatorio_historico_medico(id_medico):

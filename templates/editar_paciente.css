@@ -1,0 +1,132 @@
+/* Estilos para a página de Edição de Dados do Paciente */
+
+/* Estilo base do corpo, consistente com o resto do sistema */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container principal do formulário */
+.box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 500px;
+}
+
+form {
+    width: 100%;
+}
+
+fieldset {
+    border: none;
+}
+
+legend {
+    border: 1px solid #28a745; /* Verde do paciente */
+    padding: 10px;
+    text-align: center;
+    background-color: #28a745;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Estilo para o container de cada input, para o efeito de label flutuante */
+.input_box {
+    position: relative;
+    margin: 30px 0;
+}
+
+.input_user {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #555;
+    outline: none;
+    color: #333;
+    font-size: 15px;
+    width: 100%;
+    letter-spacing: 1px;
+}
+
+/* Efeito do label flutuante */
+.label_input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    transition: .5s;
+    color: #555;
+}
+
+.input_user:focus ~ .label_input,
+.input_user:valid ~ .label_input {
+    top: -20px;
+    font-size: 12px;
+    color: #28a745;
+}
+
+.cancelar {
+    color: #dc3545; /* Vermelho para ação de cancelar */
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #dc3545; /* Vermelho para ação de sair/cancelar */
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    text-align: center;
+    display: block;
+}
+
+.cancelar:hover {
+    background-color: #c82333;
+}
+
+/* Botão de submit */
+.btn-submit {
+    background-image: linear-gradient(to right, rgb(176, 204, 236), rgb(16, 136, 130));
+    width: 100%;
+    border: none;
+    padding: 15px;
+    color: white;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center; /* Garantia de alinhamento */
+    box-sizing: border-box; /* Boa prática */
+}
+
+.btn-submit:hover {
+    background-image: linear-gradient(to right, rgb(44, 80, 121), rgb(17, 28, 129));
+}
+
+@media (max-width: 480px) {
+    .box {
+        width: 85%;
+        padding: 20px;
+    }
+
+    /* E AQUI MUDAMOS a regra de mídia para usar a classe */
+    .btn-submit {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .input_user {
+        font-size: 14px;
+    }
+}

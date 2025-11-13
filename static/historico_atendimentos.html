@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico de Atendimentos</title>
-    <link rel="stylesheet" href="../templetes/historico_atendimentos.css"> 
+    <link rel="stylesheet" href="../templates/historico_atendimentos.css"> 
     <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
 </head>
 <body>
@@ -17,23 +17,52 @@
         <div class="content">
             <p>Aqui está uma lista de todos os seus atendimentos anteriores.</p>
             <div id="lista-historico">
-                <div class="card-paciente">
-                    <strong>Data:</strong> 05/10/2025<br>
-                    <strong>Médico:</strong> Dr(a). Fernandes [Clínico Geral]<br>
-                    <strong>Observações:</strong> Check-up anual.
-                </div>
-                <div class="card-paciente">
-                    <strong>Data:</strong> 15/08/2025<br>
-                    <strong>Médico:</strong> Dr(a). Oliveira [Dermatologista]<br>
-                    <strong>Observações:</strong> Queixa de mancha na pele.
-                </div>
-                <div class="card-paciente">
-                    <strong>Data:</strong> 20/02/2025<br>
-                    <strong>Médico:</strong> Dr(a). Silva [Cardiologista]<br>
-                    <strong>Observações:</strong> Acompanhamento de rotina.
-                </div>
+                <p>Carregando histórico...</p>
             </div>
         </div>
     </div>
+
+    <script>
+        const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const pacienteId = localStorage.getItem('paciente_id');
+            if (!pacienteId) {
+                alert('Erro: Paciente não identificado.');
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // --- Buscar Histórico de Atendimentos ---
+            const containerAtendimentos = document.getElementById('lista-historico');
+            fetch(API_URL + '/api/relatorios/ficha_atendimentos/' + pacienteId)
+                .then(response => response.json())
+                .then(data => {
+                    containerAtendimentos.innerHTML = '';
+                    if (data.length === 0) {
+                        containerAtendimentos.innerHTML = '<p>Nenhum atendimento no histórico.</p>';
+                        return;
+                    }
+                    
+                    data.forEach(atendimento => {
+                        const card = document.createElement('div');
+                        card.className = 'card-paciente'; // Reutilizando classe
+                        const dataFormatada = new Date(atendimento.data_atendimento).toLocaleString('pt-BR');
+                        
+                        card.innerHTML = `
+                            <strong>Data:</strong> ${dataFormatada}<br>
+                            <strong>Médico:</strong> ${atendimento.NomeMedico} [${atendimento.Especialidade}]<br>
+                            <strong>Observações:</strong> ${atendimento.observacoes}
+                        `;
+                        containerAtendimentos.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar histórico:', error);
+                    containerAtendimentos.innerHTML = '<p>Erro ao carregar histórico.</p>';
+                });
+        });
+    </script>
 </body>
 </html>
