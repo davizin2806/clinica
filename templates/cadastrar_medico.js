@@ -64,7 +64,7 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
         cep: document.getElementById('cep').value
     };
 
-    fetch(API_URL + '/api/cadastrar_medico', {
+    fetch('http://192.168.1.14:5000/api/cadastrar_medico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosParaEnviar)
