@@ -31,7 +31,7 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
         senha: senha,
         nome: document.getElementById('nome').value,
         cpf: document.getElementById('cpf').value,
-        crf: document.getElementById('crf').value,
+        crf: document.getElementById('crm').value,
         telefone: document.getElementById('telefone').value,
         id_especialidade: document.getElementById('especialidade').value,
         logradouro: document.getElementById('logradouro').value,
