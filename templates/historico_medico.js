@@ -1,4 +1,4 @@
-// Arquivo: ../templetes/historico_medico.js
+// Arquivo: ../templates/historico_medico.js
 
 document.addEventListener('DOMContentLoaded', () => {
 

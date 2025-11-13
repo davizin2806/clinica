@@ -1,7 +1,7 @@
-// templetes/novo_atendimento.js
+// templates/novo_atendimento.js
 document.addEventListener("DOMContentLoaded", () => {
     
-    const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+    const API_URL = 'http://172.20.12.151:5000'; // ⚠️ MUDE SE O IP MUDAR
 
     // --- 1. Seleção dos Elementos ---
     const btnBuscar = document.getElementById("btn-buscar");
