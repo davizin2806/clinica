@@ -1,7 +1,7 @@
 // templates/dashboard_medico.js
 
 // ⚠️ MUDE AQUI SE O IP MUDAR
-const API_URL = 'http://192.168.1.14:5000'; 
+const API_URL = 'http://172.20.14.138:5000'; 
 let todosPacientes = []; // Cache para o filtro
 
 /* * Função de Logout (desconectar)

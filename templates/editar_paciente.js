@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE SE O IP MUDAR
 
         const pacienteId = localStorage.getItem('paciente_id');
         if (!pacienteId) {
