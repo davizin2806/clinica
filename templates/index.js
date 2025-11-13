@@ -37,9 +37,16 @@ async function validarLogin() {
       
       if (resultado.tipo_usuario === 'MED') {
         window.location.href = 'static/dashbord_medico.html';
-      } else {
-        // Assumindo 'PAC' ou qualquer outro
+      
+      } else if (resultado.tipo_usuario === 'PAC') {
         window.location.href = 'static/dashbord_paciente.html';
+      
+      } else if (resultado.tipo_usuario === 'ADMIN') {
+        window.location.href = 'static/dashboard_admin.html';
+      
+      } else {
+        // Caso de segurança
+        mensagemErro.textContent = 'Tipo de usuário desconhecido.';
       }
     } else {
       mensagemErro.textContent = resultado.mensagem;

@@ -55,11 +55,21 @@ const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
             })
             .then(response => response.json().then(data => ({ status: response.status, body: data })))
             .then(({ status, body }) => {
-                alert(body.message); // Ex: "Paciente e Login criados..." ou "Erro: E-mail duplicado"
+                alert(body.message); 
                 
-                if (status === 201) { // 201 = Created
+                if (status === 201) {
                     event.target.reset(); // Limpa o formulário
-                    window.location.href = 'dashbord_medico.html';
+                    
+                    // Verifica quem está logado no localStorage
+                    const tipoUsuarioLogado = localStorage.getItem('tipo_usuario');
+                    
+                    if (tipoUsuarioLogado === 'ADMIN') {
+                        // Se for Admin, volta para o dashboard de admin
+                        window.location.href = 'dashboard_admin.html';
+                    } else {
+                        // Caso contrário, volta para o dashboard do médico (padrão)
+                        window.location.href = 'dashbord_medico.html'; 
+                    }
                 }
             })
             .catch(error => {
