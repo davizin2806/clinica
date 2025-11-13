@@ -8,6 +8,14 @@ A  [Primeira parte do projeto](https://github.com/fab027/Clinica-Joao-VI) se fun
 
 Agora a segunda parte do projeto busca criar de fato o sistema, com a criação do site/aplicativo interligado com o banco de dados funcional, com suas store procedures e outras utilidades necessárias para a sua concretização. 
 
+## Descrição das pastas / arquivos
+
+- BackSQL - Backup do banco de dados
+- Imagens - Icones e imagens utilizadas no site
+- Static - Todos os arquivos HTML/páginas do site
+- Templates - Todos os arquivos CSS e JS de cada página do site
+- app.py - API feita em python
+- index.html - Página inicial do site
 
 ## Autores
 
