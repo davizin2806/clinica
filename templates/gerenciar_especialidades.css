@@ -1,0 +1,202 @@
+/* Estilos para a página Gerenciar Especialidades, baseados no dashboard_medico.css */
+
+/* --- Corpo da página (baseado no dashboard_medico.css) --- */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: linear-gradient(45deg, #63a1c7, #FFFFFF);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* --- Container principal (baseado no dashboard_medico.css) --- */
+.dashboard-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+/* --- Cabeçalho --- */
+.header-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #0056b3; /* Azul do header-medico */
+    padding-bottom: 15px;
+    margin-bottom: 30px; /* Aumenta o espaçamento inferior */
+}
+
+.header-admin h2 {
+    color: #0056b3; /* Azul do header-medico */
+    margin: 0;
+    font-size: 1.5em;
+}
+
+/* --- Botão de Voltar --- */
+.btn-voltar {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #ad1a1a;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease; /* Transição suave para todas as propriedades */
+}
+
+.btn-voltar:hover {
+    background-color: #d32828;
+    transform: translateY(-2px); /* Efeito de elevação */
+}
+
+/* --- Seções de conteúdo --- */
+.form-section,
+.lista-section {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efeito de transição */
+}
+
+.form-section h3,
+.lista-section h3 {
+    margin-top: 0;
+    color: #0056b3;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.form-section:hover,
+.lista-section:hover {
+    transform: translateY(-5px); /* Efeito de elevação ao passar o mouse */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Estilos de formulário (baseado no cadastrar_medico.css) --- */
+.input_box {
+    margin-bottom: 20px;
+}
+
+label {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.25);
+    outline: none;
+}
+
+/* --- Botão de Adicionar (Salvar) --- */
+.btn-adicionar {
+    width: auto;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    font-size: 15px;
+    background-color: #007bff; /* Azul primário para ação de adicionar */
+    transition: all 0.3s ease;
+}
+
+.btn-adicionar:hover {
+    background-color: #0056b3; /* Azul mais escuro no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Tabela de especialidades --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* --- Estilos para botões de ação na tabela --- */
+.acoes {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-acao {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+/* Botão Editar (azul do dashboard) */
+.btn-editar {
+    background-color: #007bff;
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+/* Botão Excluir (vermelho do logout) */
+.btn-excluir {
+    background-color: #dc3545;
+}
+
+.btn-excluir:hover {
+    background-color: #c82333;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 600px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+    .header-admin {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}

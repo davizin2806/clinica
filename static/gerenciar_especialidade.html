@@ -4,61 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Especialidades</title>
-    <link rel="stylesheet" href="../templetes/medico.css">
+    <link rel="stylesheet" href="../templates/gerenciar_especialidades.css">
     <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
-    <style>
-        .lista-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .lista-item:nth-child(even) { background-color: #f9f9f9; }
-        .btn-remover {
-            background-color: #dc3545; 
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-remover:hover { background-color: #c82333; }
-        .form-add {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .form-add input[type="text"] { flex-grow: 1; }
-    </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="header-medico">
-            <h2>Gerenciar Especialidades</h2> 
-            <a href="dashbord_medico.html" class="logout-button" style="background-color: #6c757d; text-decoration: none;">Voltar</a>
-        </div>        
-        
-        <div class="content">
-            
-            <section class="dashboard-section">
-                <h3>Adicionar Nova Especialidade</h3>
-                <form id="form-add-especialidade" class="form-add">
-                    <input type="text" id="nome-especialidade" placeholder="Nome da nova especialidade" required>
-                    <button type"submit" class="submit" style="width: auto; padding: 10px 15px;">Salvar</button>
-                </form>
-            </section>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Especialidades</title>
+    <link rel="stylesheet" href="../templates/gerenciar_especialidades.css">
+    <link rel="stylesheet" href="../templetes/style.css"> 
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="dashboard-container">
+                <div class="header-admin">
+            <h2>Gerenciar Especialidades</h2>
+                        <a href="dashboard_admin.html" class="btn-voltar">Voltar</a>
+        </div>        
+        
+        <div class="content">
+            
+                        <section class="dashboard-section">
+                <fieldset>
+                    <legend>Adicionar Nova Especialidade</legend>
+                    <form id="form-add-especialidade" class="form-add">
+                        
+                        <div class="input_box" style="margin-bottom: 20px;">
+                            <br>
+                            <label for="nome-especialidade" class="label_input">Nome da Especialidade:</label>
+                            <input type="text" id="nome-especialidade" class="input_user" required>
+                            
+                        </div>
 
-            <section class="dashboard-section">
-                <h2>Especialidades Atuais</h2>
-                <div id="lista-especialidades">
-                    <p>Carregando...</p>
-                </div>
-            </section>      
-                       
-        </div>
-    </div>
-    
+                    <button type="submit" class="submit" style="width: 100%; margin-top: 10px;">Salvar</button>
+                </form>
+                </fieldset>
+            </section>
+                        <section class="dashboard-section">
+                <h2>Especialidades Atuais</h2>
+                <div id="lista-especialidades">
+                    <p>Carregando...</p>
+                </div>
+            </section>      
+                       
+        </div>
+    </div>
     <script>
         const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
         const listaContainer = document.getElementById('lista-especialidades');

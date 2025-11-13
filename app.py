@@ -435,20 +435,14 @@ def relatorio_historico_medico(id_medico):
     finally:
         cursor.close()
         conn.close()
-@app.route('/api/especialidades', methods=['GET'])
-def listar_especialidades():
-    conn = conexao_bd()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id_especialidade, nome FROM Especialidade")
-    especialidades = [{'id_especialidade': row[0], 'nome': row[1]} for row in cursor.fetchall()]
-    conn.close()
-    return jsonify(especialidades)
+
+
 
 # --- CADASTRAR MÉDICO ---
 @app.route('/api/cadastrar_medico', methods=['POST'])
 def cadastrar_medico():
     data = request.json
-    conn = conexao_bd()
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
