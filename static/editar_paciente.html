@@ -112,25 +112,25 @@
                     });
                 });
 
-            // 2. Carregar dados DO PACIENTE
+// 2. Carregar dados DO PACIENTE
             const pacientePromise = fetch(API_URL + '/api/pacientes/' + pacienteId)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('id_paciente').value = data.id_paciente;
-                    document.getElementById('id_endereco').value = data.id_endereco;
-                    document.getElementById('nome').value = data.nome;
-                    document.getElementById('cpf').value = data.cpf;
-                    document.getElementById('data_nascimento').value = data.data_nascimento.split('T')[0];
+                    // ... (código de id, nome, cpf, etc.) ...
+                    
+                    // --- CORREÇÃO DA DATA DE NASCIMENTO ---
+                    // 1. Cria um objeto Date a partir da string longa
+                    const dateObj = new Date(data.data_nascimento);
+                    // 2. Formata para YYYY-MM-DD
+                    const year = dateObj.getFullYear();
+                    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // +1 pois getMonth() é 0-11
+                    const day = dateObj.getDate().toString().padStart(2, '0');
+                    // 3. Define o valor no formato correto
+                    document.getElementById('data_nascimento').value = `${year}-${month}-${day}`;
+                    
                     document.getElementById('telefone').value = data.telefone;
                     document.getElementById('email').value = data.email;
-                    document.getElementById('cep').value = data.cep;
-                    document.getElementById('logradouro').value = data.logradouro;
-                    document.getElementById('numero').value = data.numero;
-                    document.getElementById('complemento').value = data.complemento;
-                    document.getElementById('bairro').value = data.bairro;
-                    document.getElementById('cidade').value = data.cidade;
-                    document.getElementById('estado').value = data.estado;
-                    return data; // Retorna os dados para setar o convênio
+                    return data; 
                 });
 
             // 3. Espera ambos carregarem para setar o convênio
