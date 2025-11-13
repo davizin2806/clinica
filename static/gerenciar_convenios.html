@@ -9,31 +9,77 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <div class="header-admin">
-            <h2>Gerenciar Convênios e Descontos</h2>
-            <a href="dashboard_admin.html" style="color: white; text-decoration: none;">Voltar</a>
-        </div>
-        
+<div class="header-admin">
+    <h2>Gerenciar Convênios e Descontos</h2>
+    <a href="dashboard_admin.html" class="btn-voltar">⬅ Voltar ao Dashboard</a>
+</div>
         <div class="content">
             
-            <form id="form-novo-convenio" class="form-convenio">
-                <fieldset>
-                    <legend>1. Cadastrar Novo Convênio</legend>
-                    <div class="input_box" style="margin-bottom: 20px;">
-                        <input type="text" id="nome-convenio" class="input_user" required style="color: #333; border-bottom: 1px solid #ccc;">
-                        <label for="nome-convenio" class="label_input" style="color: #555;">Nome do Convênio (Ex: Unimed)</label>
-                    </div>
-                    <div class="input_box" style="margin-bottom: 20px;">
-                        <input type="text" id="cnpj-convenio" class="input_user" required style="color: #333; border-bottom: 1px solid #ccc;">
-                        <label for="cnpj-convenio" class="label_input" style="color: #555;">CNPJ</label>
-                    </div>
-                    <div class="input_box" style="margin-bottom: 20px;">
-                        <input type="tel" id="tel-convenio" class="input_user" required style="color: #333; border-bottom: 1px solid #ccc;">
-                        <label for="tel-convenio" class="label_input" style="color: #555;">Telefone</label>
-                    </div>
-                    <button type="submit" class="btn-submit" style="width: auto; padding: 10px 20px;">Salvar Novo Convênio</button>
-                </fieldset>
-            </form>
+<form id="form-novo-convenio" class="form-convenio">
+    <fieldset>
+        <legend>1. Cadastrar Novo Convênio</legend>
+        
+        <h3>Dados Cadastrais</h3>
+        <div class="input_box">
+            <input type="text" id="nome-convenio" class="input_user" required />
+            <label for="nome-convenio" class="label_input">Nome do Convênio</label>
+        </div>
+        <div class="input_box">
+            <input type="text" id="cnpj-convenio" class="input_user" required maxlength="14" />
+            <label for="cnpj-convenio" class="label_input">CNPJ (Somente números)</label>
+        </div>
+        <div class="input_box">
+            <input type="tel" id="tel-convenio" class="input_user" required />
+            <label for="tel-convenio" class="label_input">Telefone</label>
+        </div>
+        <div class="input_box">
+            <input type="email" id="email-convenio" class="input_user" required />
+            <label for="email-convenio" class="label_input">E-mail</label>
+        </div>
+
+        <hr>
+
+        <h3>Endereço</h3>
+        <div class="input_box">
+            <input type="text" id="cep-convenio" class="input_user" required maxlength="9" />
+            <label for="cep-convenio" class="label_input">CEP</label>
+        </div>
+        
+        <div class="input_box">
+            <input type="text" id="logradouro-convenio" class="input_user" required />
+            <label for="logradouro-convenio" class="label_input">Logradouro (Rua/Av.)</label>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div class="input_box" style="flex: 1;">
+                <input type="text" id="numero-convenio" class="input_user" />
+                <label for="numero-convenio" class="label_input">Número</label>
+            </div>
+            <div class="input_box" style="flex: 2;">
+                <input type="text" id="complemento-convenio" class="input_user" />
+                <label for="complemento-convenio" class="label_input">Complemento</label>
+            </div>
+        </div>
+
+        <div class="input_box">
+            <input type="text" id="bairro-convenio" class="input_user" required />
+            <label for="bairro-convenio" class="label_input">Bairro</label>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div class="input_box" style="flex: 3;">
+                <input type="text" id="cidade-convenio" class="input_user" required />
+                <label for="cidade-convenio" class="label_input">Cidade</label>
+            </div>
+            <div class="input_box" style="flex: 1;">
+                <input type="text" id="estado-convenio" class="input_user" required maxlength="2" />
+                <label for="estado-convenio" class="label_input">UF</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" style="margin-top: 20px;">Salvar Novo Convênio</button>
+    </fieldset>
+</form>
 
             <hr style="margin: 30px 0;">
 
@@ -83,7 +129,14 @@
                     </div>
                     <button id="btn-salvar-descontos" class="btn-submit" style="width: auto; padding: 10px 20px; margin-top: 20px;">Salvar Descontos</button>
                 </fieldset>
-            </div>
+        </div> <hr>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="dashboard_admin.html" class="btn-voltar" style="background-color: #e96a6e; padding: 15px 30px; display: inline-block;">
+                Cancelar e Voltar ao Dashboard
+            </a>
+        </div>
+
+    </div> </div> ```
         </div>
     </div>
     

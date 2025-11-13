@@ -122,16 +122,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- FUNÇÃO 5: Salvar Novo Convênio (POST) ---
+// --- FUNÇÃO 5: Salvar Novo Convênio (POST) ---
     formNovoConvenio.addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        // Captura todos os dados do formulário novo
         const dadosParaEnviar = {
             nome: document.getElementById('nome-convenio').value,
             cnpj: document.getElementById('cnpj-convenio').value,
             telefone: document.getElementById('tel-convenio').value,
-            // O app.py usará valores padrão para o endereço
+            email: document.getElementById('email-convenio').value,
+            
+            // Dados de Endereço
+            cep: document.getElementById('cep-convenio').value,
+            logradouro: document.getElementById('logradouro-convenio').value,
+            numero: document.getElementById('numero-convenio').value,
+            complemento: document.getElementById('complemento-convenio').value,
+            bairro: document.getElementById('bairro-convenio').value,
+            cidade: document.getElementById('cidade-convenio').value,
+            estado: document.getElementById('estado-convenio').value
         };
+
+        console.log("Enviando:", dadosParaEnviar); // Para depuração no console
 
         try {
             const response = await fetch(API_URL + '/api/convenios', {
@@ -145,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 formNovoConvenio.reset();
-                loadConvenios(); // Recarrega a lista de convênios
+                loadConvenios(); // Recarrega a lista
             }
         } catch (error) {
             console.error('Erro ao salvar convênio:', error);
