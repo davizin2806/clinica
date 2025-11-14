@@ -1,4 +1,4 @@
-// templetes/index.js
+// --- LOGIN ---
 async function validarLogin() {
   const email = document.getElementById('emailInput').value.trim();
   const senha = document.getElementById('senhaInput').value.trim();
@@ -11,7 +11,6 @@ async function validarLogin() {
   }
 
   try {
-    // ⚠️ ATENÇÃO: Use a URL completa da API
     const resposta = await fetch('http://172.20.14.138:5000/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -21,32 +20,23 @@ async function validarLogin() {
     const resultado = await resposta.json();
 
     if (resultado.sucesso) {
-      // --- SALVA OS DADOS NO LOCALSTORAGE ---
       localStorage.setItem('tipo_usuario', resultado.tipo_usuario);
       localStorage.setItem('usuario_nome', resultado.nome);
-      
-      // Salva os IDs para as próximas telas
-      if(resultado.id_paciente) {
+
+      if (resultado.id_paciente)
         localStorage.setItem('paciente_id', resultado.id_paciente);
-      }
-      if(resultado.id_medico) {
+
+      if (resultado.id_medico)
         localStorage.setItem('medico_id', resultado.id_medico);
-      }
-      
+
       alert(resultado.mensagem);
-      
+
       if (resultado.tipo_usuario === 'MED') {
         window.location.href = 'static/dashbord_medico.html';
-      
       } else if (resultado.tipo_usuario === 'PAC') {
         window.location.href = 'static/dashbord_paciente.html';
-      
       } else if (resultado.tipo_usuario === 'ADMIN') {
         window.location.href = 'static/dashboard_admin.html';
-      
-      } else {
-        // Caso de segurança
-        mensagemErro.textContent = 'Tipo de usuário desconhecido.';
       }
     } else {
       mensagemErro.textContent = resultado.mensagem;
@@ -56,4 +46,9 @@ async function validarLogin() {
     mensagemErro.textContent = 'Erro ao conectar com o servidor.';
     console.error(erro);
   }
+}
+
+// --- REDIRECIONA PARA A TELA DE CADASTRO ---
+function se_cadastrar() {
+  window.location.href = "../static/cadastro_pclogin.html";  
 }
