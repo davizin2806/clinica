@@ -1,6 +1,7 @@
 import pyodbc
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import datetime
 
 # --- 1. Configuração Inicial ---
 app = Flask(__name__)
@@ -328,10 +329,19 @@ def handle_atendimentos():
     cursor = conn.cursor()
     try:
         dados = request.get_json()
+        
+        # --- CORREÇÃO AQUI ---
+        # 1. Pega a string 'YYYY-MM-DDThh:mm' do JSON
+        data_str = dados['data_atendimento']
+        
+        # 2. Converte a string para um objeto datetime do Python
+        data_obj = datetime.datetime.strptime(data_str, '%Y-%m-%dT%H:%M')
+        # ---------------------
+
         params = (
             int(dados['id_paciente']), 
             int(dados['id_medico']), 
-            dados['data_atendimento'], 
+            data_obj, # <-- Agora é um objeto datetime, não mais uma string
             dados['observacoes']
         )
         cursor.execute("EXEC sp_Atendimento_Agendar @id_paciente=?, @id_medico=?, @data_atendimento=?, @observacoes=?", params)
