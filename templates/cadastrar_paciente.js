@@ -79,3 +79,20 @@ const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
                 alert('Erro ao conectar com o servidor. Verifique o console.');
             });
         });
+
+        // ... (seu código anterior continua aqui) ...
+
+// --- Lógica do Botão Cancelar/Voltar ---
+document.getElementById('btn-cancelar').addEventListener('click', function() {
+    // Verifica quem está logado
+    const tipoUsuario = localStorage.getItem('tipo_usuario');
+    
+    if (tipoUsuario === 'ADMIN') {
+        // Se for Admin, volta para o painel de controle
+        window.location.href = 'dashboard_admin.html';
+    } else {
+        // Se for Médico (ou outro), volta para o painel do médico
+        // (Note a grafia do seu arquivo: 'dashbord' sem o 'a')
+        window.location.href = 'dashbord_medico.html';
+    }
+});
