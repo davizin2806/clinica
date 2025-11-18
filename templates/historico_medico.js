@@ -1,7 +1,6 @@
 // Arquivo: ../templates/historico_medico.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch(API_URL + "/api/historico_medico")
 
     // 1. Pega os elementos do filtro e da lista
     const grupoFiltros = document.getElementById('filtro-convenios');

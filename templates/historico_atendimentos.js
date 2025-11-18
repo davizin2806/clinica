@@ -1,6 +1,4 @@
         document.addEventListener('DOMContentLoaded', function() {
-            fetch(API_URL + "/api/historico_atendimentos")
-
             
             const pacienteId = localStorage.getItem('paciente_id');
             if (!pacienteId) {

@@ -1,5 +1,3 @@
-
-fetch(API_URL + "/api/dashbord_paciente")
 function logout() {
     localStorage.clear(); // Limpa tudo salvo (tipo_usuario, nome, etc.)
     alert('Você foi desconectado.');

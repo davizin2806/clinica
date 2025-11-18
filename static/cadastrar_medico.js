@@ -1,46 +1,17 @@
-// Use 127.0.0.1 para evitar erros se o IP da rede mudar
-const API_URL = 'http://192.168.1.14:5000'; 
-
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Iniciando carregamento de especialidades...");
-
+    // Usa API_URL do config.js
     fetch(API_URL + '/api/especialidades')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro na resposta da API: ' + response.status);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log("Especialidades recebidas:", data);
-            
             const selectEspecialidade = document.getElementById('especialidade');
-            
-            // Limpa o "Carregando..." e adiciona a opção padrão
-            selectEspecialidade.innerHTML = '<option value="">Selecione uma especialidade</option>';
-
             data.forEach(esp => {
                 const option = document.createElement('option');
-                
-                // CORREÇÃO CRÍTICA:
-                // Tenta pegar o ID e o Nome independente se vier Maiúsculo ou Minúsculo do SQL Server
-                const id = esp.id_especialidade;
-                const nome = esp.nome;
-
-                if (id && nome) {
-                    option.value = id;
-                    option.textContent = nome;
-                    selectEspecialidade.appendChild(option);
-                } else {
-                    console.warn("Item incompleto recebido:", esp);
-                }
+                option.value = esp.id_especialidade;
+                option.textContent = esp.nome;
+                selectEspecialidade.appendChild(option);
             });
         })
-        .catch(error => {
-            console.error('Erro ao carregar especialidades:', error);
-            const select = document.getElementById('especialidade');
-            select.innerHTML = '<option value="">Erro ao carregar lista</option>';
-        });
+        .catch(error => console.error('Erro ao carregar especialidades:', error));
 });
 
 document.getElementById('formCadastrarMedico').addEventListener('submit', function(event) {
@@ -48,20 +19,17 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
 
     const senha = document.getElementById('senha').value;
     const confirmarSenha = document.getElementById('confirmar_senha').value;
-    
     if (senha !== confirmarSenha) {
         alert('As senhas não coincidem!');
         return;
     }
 
-    // Captura os dados
     const dados = {
         email: document.getElementById('email').value,
         senha: senha,
         nome: document.getElementById('nome').value,
         cpf: document.getElementById('cpf').value,
-        // CORREÇÃO: Agora busca pelo ID correto 'crm'
-        crm: document.getElementById('crm').value,
+        crm: document.getElementById('crm').value, // CORREÇÃO: De 'crf' para 'crm'
         telefone: document.getElementById('telefone').value,
         id_especialidade: document.getElementById('especialidade').value,
         logradouro: document.getElementById('logradouro').value,
@@ -73,8 +41,7 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
         cep: document.getElementById('cep').value
     };
 
-    console.log("Enviando dados:", dados);
-
+    // CORREÇÃO: Usa API_URL em vez do IP fixo
     fetch(API_URL + '/api/cadastrar_medico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,12 +49,10 @@ document.getElementById('formCadastrarMedico').addEventListener('submit', functi
     })
     .then(response => response.json().then(data => ({ status: response.status, body: data })))
     .then(({ status, body }) => {
+        alert(body.message);
         if (status === 201) {
-            alert('Sucesso: ' + body.message);
-            document.getElementById('formCadastrarMedico').reset();
+            event.target.reset();
             window.location.href = 'dashboard_admin.html';
-        } else {
-            alert('Erro: ' + body.message);
         }
     })
     .catch(error => {

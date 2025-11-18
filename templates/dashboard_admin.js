@@ -1,4 +1,3 @@
-fetch(API_URL + "/api/dashboard_admin")
 function logout() {
     localStorage.setItem('tipo_usuario', 'ADMIN'); 
     alert('Você foi desconectado.');

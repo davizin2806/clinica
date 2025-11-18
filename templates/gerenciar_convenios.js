@@ -1,6 +1,4 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-    fetch(API_URL + "/api/gerenciar_convenios")
 
     const selectConvenio = document.getElementById('select-convenio');
     const tabelaDescontosBody = document.querySelector('#tabela-descontos tbody');
@@ -25,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- FUNÇÃO 2: Carregar Tabela de Exames/Descontos ---
+   // --- FUNÇÃO 2: Carregar Tabela de Exames/Descontos (CORRIGIDA) ---
     async function loadDescontos(convenioId) {
         if (!convenioId) {
             tabelaDescontosBody.innerHTML = '<tr><td colspan="4">Selecione um convênio para ver os descontos.</td></tr>';
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         try {
-            // Chama a ROTA da API
             const response = await fetch(`${API_URL}/api/descontos/${convenioId}`);
             const data = await response.json();
             
@@ -45,19 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             data.forEach(exame => {
                 const tr = document.createElement('tr');
-                tr.dataset.idExame = exame.id_exame;
-                tr.dataset.precoPadrao = exame.preco_padrao;
                 
-                const precoPadraoF = `R$ ${exame.preco_padrao.toFixed(2)}`;
-                const desconto = exame.percentual_desconto;
-                const precoFinal = exame.preco_padrao * (1 - (desconto / 100));
-                const precoFinalF = `R$ ${precoFinal.toFixed(2)}`;
+                // CORREÇÃO: Converter para número (Float) antes de usar
+                const precoPadrao = parseFloat(exame.preco_padrao || 0);
+                const desconto = parseFloat(exame.percentual_desconto || 0);
+                
+                // Agora calculamos com números seguros
+                const precoFinal = precoPadrao * (1 - (desconto / 100));
 
+                // Salva os dados no HTML (dataset) para usar depois
+                tr.dataset.idExame = exame.id_exame;
+                tr.dataset.precoPadrao = precoPadrao; 
+                
                 tr.innerHTML = `
                     <td>${exame.nome}</td>
-                    <td>${precoPadraoF}</td>
-                    <td><input type="number" class="input-desconto" min="0" max="100" value="${desconto.toFixed(0)}"> %</td>
-                    <td class="preco-final">${precoFinalF}</td>
+                    <td>R$ ${precoPadrao.toFixed(2)}</td>
+                    <td>
+                        <input type="number" class="input-desconto" min="0" max="100" value="${desconto.toFixed(0)}"> %
+                    </td>
+                    <td class="preco-final">R$ ${precoFinal.toFixed(2)}</td>
                 `;
                 tabelaDescontosBody.appendChild(tr);
             });

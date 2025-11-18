@@ -1,5 +1,4 @@
-
-        const pacienteId = localStorage.getItem('paciente_id');
+const pacienteId = localStorage.getItem('paciente_id');
         if (!pacienteId) {
             alert('Paciente não identificado!');
             window.location.href = '../index.html';

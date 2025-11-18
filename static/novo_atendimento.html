@@ -38,6 +38,8 @@
         </div>
     </div>
 
+    <script src="../templates/config.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
@@ -52,17 +54,27 @@
             let pacienteEncontrado = null; // Armazena o objeto COMPLETO do paciente
             let medicoId = localStorage.getItem('medico_id'); // Pega o ID do médico logado
 
-            // --- 2. Carregar Exames Disponíveis (da API) ---
+// --- 2. Carregar Exames Disponíveis (da API) ---
             fetch(API_URL + '/api/exames')
                 .then(response => response.json())
                 .then(data => {
                     divListaExames.innerHTML = ''; // Limpa "Carregando..."
+                    
+                    if (data.length === 0) {
+                        divListaExames.innerHTML = '<p>Nenhum exame cadastrado.</p>';
+                        return;
+                    }
+
                     data.forEach(exame => {
+                        // CORREÇÃO AQUI:
+                        // Garantimos que o preço seja um número. Se vier nulo, usa 0.
+                        const preco = parseFloat(exame.preco_padrao || 0);
+
                         const label = document.createElement('label');
                         label.innerHTML = `
-                            <input type="checkbox" data-id-exame="${exame.id_exame}" data-preco-padrao="${exame.preco_padrao}"> 
-                            ${exame.nome}
-                            <span class="preco-exame"> (Padrão: R$ ${exame.preco_padrao.toFixed(2)})</span>
+                            <input type="checkbox" data-id-exame="${exame.id_exame}" data-preco-padrao="${preco}"> 
+                            ${exame.nome || exame.descricao} 
+                            <span class="preco-exame"> (Padrão: R$ ${preco.toFixed(2)})</span>
                         `;
                         divListaExames.appendChild(label);
                     });
@@ -71,7 +83,6 @@
                     console.error('Erro ao carregar exames:', error);
                     divListaExames.innerHTML = '<p style="color: red;">Erro ao carregar exames.</p>';
                 });
-
             // --- 4. Lógica de Busca de Paciente (com API) ---
             btnBuscar.addEventListener("click", () => {
                 const termo = inputBusca.value.trim(); // CPF
