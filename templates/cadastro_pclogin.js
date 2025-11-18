@@ -1,5 +1,4 @@
-const API_URL = 'http://172.20.14.138:500'; // ⚠️ MUDE AQUI SE O IP MUDAR
-
+fetch(API_URL + "/api/dashbord_paciente")
         // --- Carregar Convênios no Dropdown ---
         document.addEventListener('DOMContentLoaded', function() {
             fetch(API_URL + '/api/convenios')

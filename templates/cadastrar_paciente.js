@@ -1,4 +1,4 @@
-const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
+fetch(API_URL + "/api/dashbord_paciente")
 
         // --- Carregar Convênios no Dropdown ---
         document.addEventListener('DOMContentLoaded', function() {
@@ -27,7 +27,7 @@ const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
                 alert('As senhas não coincidem!');
                 return;
             }
-            
+
             const dadosParaEnviar = {
                 // Login
                 email: document.getElementById('email').value,

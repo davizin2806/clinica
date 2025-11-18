@@ -1,8 +1,5 @@
-// Arquivo: dashboard.js (Versão Completa)
 
-/* * Função de Logout (desconectar)
- * Limpa o 'login' salvo no navegador e volta para a tela de login.
- */
+fetch(API_URL + "/api/dashbord_paciente")
 function logout() {
     localStorage.clear(); // Limpa tudo salvo (tipo_usuario, nome, etc.)
     alert('Você foi desconectado.');

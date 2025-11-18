@@ -1,6 +1,7 @@
-const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE SE O IP MUDAR
 
         document.addEventListener('DOMContentLoaded', function() {
+            fetch(API_URL + "/api/historico_atendimentos")
+
             
             const pacienteId = localStorage.getItem('paciente_id');
             if (!pacienteId) {

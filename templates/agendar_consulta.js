@@ -1,4 +1,4 @@
-const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE SE O IP MUDAR
+fetch(API_URL + "/api/agendar_consulta")
         let medicosData = []; // Cache de médicos
 
         document.addEventListener('DOMContentLoaded', function() {

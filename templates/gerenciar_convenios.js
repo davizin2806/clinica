@@ -1,10 +1,6 @@
-// templates/gerenciar_convenios.js
-
-// ⚠️ MUDE AQUI SE O IP MUDAR
-const API_URL = 'http://172.20.14.138:5000'; 
-
 document.addEventListener('DOMContentLoaded', () => {
-    
+    fetch(API_URL + "/api/gerenciar_convenios")
+
     const selectConvenio = document.getElementById('select-convenio');
     const tabelaDescontosBody = document.querySelector('#tabela-descontos tbody');
     const formNovoConvenio = document.getElementById('form-novo-convenio');

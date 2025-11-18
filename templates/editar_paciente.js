@@ -1,5 +1,4 @@
-const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE SE O IP MUDAR
-
+        fetch(API_URL + "/api/editar_paciente")
         const pacienteId = localStorage.getItem('paciente_id');
         if (!pacienteId) {
             alert('Paciente não identificado!');
