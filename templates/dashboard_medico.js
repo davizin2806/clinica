@@ -7,7 +7,7 @@ let todosPacientes = []; // Cache para o filtro
 /* * Função de Logout (desconectar)
  */
 function logout() {
-    localStorage.clear(); // Limpa tudo salvo
+    localStorage.setItem('tipo_usuario', 'MEDICO'); // Limpa tudo salvo
     alert('Você foi desconectado.');
     window.location.href = '../index.html'; // Redireciona para o login
 }

@@ -2,7 +2,7 @@
 
 // Função de Logout (desconectar)
 function logout() {
-    localStorage.clear(); 
+    localStorage.setItem('tipo_usuario', 'ADMIN'); 
     alert('Você foi desconectado.');
     window.location.href = '../index.html'; // Redireciona para o login
 }

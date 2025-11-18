@@ -27,7 +27,7 @@ const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
                 alert('As senhas não coincidem!');
                 return;
             }
-
+            
             const dadosParaEnviar = {
                 // Login
                 email: document.getElementById('email').value,
@@ -53,6 +53,8 @@ const API_URL = 'http://172.20.14.138:5000'; // ⚠️ MUDE AQUI SE O IP MUDAR
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dadosParaEnviar)
             })
+
+
             .then(response => response.json().then(data => ({ status: response.status, body: data })))
             .then(({ status, body }) => {
                 alert(body.message); 
