@@ -330,31 +330,38 @@ def handle_atendimentos():
     try:
         dados = request.get_json()
         
-        # --- CORREÇÃO AQUI ---
-        # 1. Pega a string 'YYYY-MM-DDThh:mm' do JSON
+        # Converte string para data
         data_str = dados['data_atendimento']
-        
-        # 2. Converte a string para um objeto datetime do Python
-        data_obj = datetime.datetime.strptime(data_str, '%Y-%m-%dT%H:%M')
-        # ---------------------
+        data_obj = datetime.datetime.strptime(data_str, '%Y-%m-%dT%H:%M') # Ajuste o formato se necessário
 
         params = (
             int(dados['id_paciente']), 
             int(dados['id_medico']), 
-            data_obj, # <-- Agora é um objeto datetime, não mais uma string
+            data_obj, 
             dados['observacoes']
         )
+        # Tenta executar a Procedure
         cursor.execute("EXEC sp_Atendimento_Agendar @id_paciente=?, @id_medico=?, @data_atendimento=?, @observacoes=?", params)
         conn.commit()
+        
         return jsonify({"message": "Atendimento agendado com sucesso!"}), 201
+
     except pyodbc.Error as e:
-        return jsonify({"message": f"{e.args[1]}"}), 400
+        # --- AQUI ESTÁ O TRATAMENTO ---
+        # O SQL Server manda o erro 'Limite diário atingido' dentro do objeto 'e'
+        # O código '40000' ou mensagem específica pode ser capturada
+        erro_msg = str(e)
+        
+        if "Limite diário atingido" in erro_msg:
+            return jsonify({"message": "Erro: O médico já atingiu o limite de 20 consultas para este dia."}), 400
+        else:
+            return jsonify({"message": f"Erro de banco: {e.args[1] if len(e.args) > 1 else erro_msg}"}), 500
+
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
-
 @app.route('/api/exames_realizados', methods=['POST'])
 def handle_exames_realizados():
     conn = get_db_connection()
@@ -482,6 +489,113 @@ def relatorio_historico_medico(id_medico):
     cursor = conn.cursor()
     try:
         cursor.execute("EXEC sp_Relatorio_HistoricoPorMedico @id_medico=?", (id_medico,))
+        return jsonify(rows_to_dict_list(cursor)), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/atendimentos/<int:id_atendimento>', methods=['DELETE'])
+def cancelar_atendimento(id_atendimento):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        # 1. Verifica se o atendimento existe (Tabela Atendimento no Singular)
+        cursor.execute("SELECT id_atendimento FROM Atendimento WHERE id_atendimento = ?", (id_atendimento,))
+        if not cursor.fetchone():
+             return jsonify({"message": "Atendimento não encontrado."}), 404
+
+        # 2. Deleta o atendimento (Tabela Atendimento no Singular)
+        cursor.execute("DELETE FROM Atendimento WHERE id_atendimento = ?", (id_atendimento,))
+        conn.commit()
+        
+        return jsonify({"message": "Consulta cancelada com sucesso."}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+# --- NOVAS ROTAS PARA STATUS E AGENDA ---
+
+@app.route('/api/atendimentos/<int:id_atendimento>/status', methods=['PUT'])
+def atualizar_status_atendimento(id_atendimento):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        dados = request.get_json()
+        novo_status = dados.get('status')
+        
+        # SQL Direto (Garantido)
+        sql = "UPDATE Atendimento SET status = ? WHERE id_atendimento = ?"
+        cursor.execute(sql, (novo_status, id_atendimento))
+        conn.commit()
+        
+        return jsonify({"message": f"Status atualizado para {novo_status}!"}), 200
+    except Exception as e:
+        print(f"Erro ao atualizar status: {e}") 
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/medicos/<int:id_medico>/agenda', methods=['GET'])
+def get_agenda_medico(id_medico):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        # SQL Direto para buscar a fila
+        sql = """
+            SELECT 
+                A.id_atendimento,
+                A.data_atendimento,
+                ISNULL(A.status, 'Agendado') as status,
+                P.nome AS NomePaciente,
+                P.cpf AS CpfPaciente
+            FROM Atendimento A
+            INNER JOIN Paciente P ON A.id_paciente = P.id_paciente
+            WHERE A.id_medico = ?
+            AND (A.status IS NULL OR A.status <> 'Cancelado')
+            
+            -- FILTRO DE HOJE (Adicione esta linha)
+            AND CAST(A.data_atendimento AS DATE) = CAST(GETDATE() AS DATE)
+            
+            ORDER BY A.data_atendimento ASC
+        """
+        cursor.execute(sql, (id_medico,))
+        return jsonify(rows_to_dict_list(cursor)), 200
+    except Exception as e:
+        print(f"Erro na agenda: {e}")
+        return jsonify({"message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# Adicione no app.py antes do if __name__ == '__main__':
+
+@app.route('/api/pacientes/<int:id_paciente>/historico_resumido', methods=['GET'])
+def get_historico_resumido(id_paciente):
+    conn = get_db_connection()
+    if conn is None: return jsonify({"message": "Erro de conexão"}), 500
+    cursor = conn.cursor()
+    try:
+        # Busca as últimas 3 observações
+        sql = """
+            SELECT TOP 3 
+                A.data_atendimento, 
+                M.nome as NomeMedico, 
+                E.nome as Especialidade,
+                A.observacoes
+            FROM Atendimento A
+            JOIN Medico M ON A.id_medico = M.id_medico
+            JOIN Especialidade E ON M.id_especialidade = E.id_especialidade
+            WHERE A.id_paciente = ? AND A.observacoes IS NOT NULL
+            ORDER BY A.data_atendimento DESC
+        """
+        cursor.execute(sql, (id_paciente,))
         return jsonify(rows_to_dict_list(cursor)), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500

@@ -33,6 +33,56 @@ function renderPacientes(pacientes) {
  * Adiciona os 'escutadores' de clique (event listeners)
  */
 document.addEventListener('DOMContentLoaded', function() {
+
+    // Adicione dentro do document.addEventListener('DOMContentLoaded', ...)
+
+    // --- CARREGAR AGENDA DO DIA (FILA) ---
+    const medicoId = localStorage.getItem('medico_id');
+    const containerFila = document.getElementById('fila-atendimento');
+
+    if (medicoId && containerFila) {
+        fetch(`${API_URL}/api/medicos/${medicoId}/agenda`)
+            .then(res => res.json())
+            .then(agenda => {
+                containerFila.innerHTML = '';
+                if (agenda.length === 0) {
+                    containerFila.innerHTML = '<p>Nenhum paciente agendado para hoje.</p>';
+                    return;
+                }
+
+                agenda.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.borderLeft = 'none'; // Remove borda padrão para customizar
+                    
+                    // Define botões baseados no status atual
+                    let botoesAcao = '';
+                    const hora = new Date(item.data_atendimento).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+                    if (item.status === 'Agendado') {
+                        botoesAcao = `<button onclick="mudarStatus(${item.id_atendimento}, 'Em Atendimento')" style="background: #ffc107; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;"> chamar > </button>`;
+                    } else if (item.status === 'Em Atendimento') {
+                        botoesAcao = `<button onclick="mudarStatus(${item.id_atendimento}, 'Finalizado')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;"> ✅ Finalizar </button>`;
+                    } else {
+                        botoesAcao = '<span>(Concluído)</span>';
+                    }
+
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>⏰ ${hora}</strong> - ${item.NomePaciente} <br>
+                                <span style="font-size: 12px; color: #666;">Status: ${item.status}</span>
+                            </div>
+                            <div>
+                                ${botoesAcao}
+                            </div>
+                        </div>
+                    `;
+                    containerFila.appendChild(card);
+                });
+            })
+            .catch(err => console.error("Erro agenda:", err));
+    }
     
     // --- 1. CARREGAR DADOS DO DASHBOARD ---
     
@@ -127,3 +177,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Função Solta (fora do DOMContentLoaded)
+async function mudarStatus(idAtendimento, novoStatus) {
+    try {
+        const response = await fetch(`${API_URL}/api/atendimentos/${idAtendimento}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: novoStatus })
+        });
+        
+        if (response.ok) {
+            // Recarrega a página para atualizar a lista
+            window.location.reload();
+        } else {
+            alert("Erro ao atualizar status.");
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}

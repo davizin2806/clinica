@@ -98,15 +98,15 @@
                     containerExames.innerHTML = '<p>Erro ao carregar exames.</p>';
                 });
 
-            // --- 2. Buscar TODOS os Atendimentos (e separar com JS) ---
+// --- 2. Buscar TODOS os Atendimentos (CÓDIGO ATUALIZADO COM BOTÃO CANCELAR) ---
             const containerFuturos = document.getElementById('lista-atendimentos-futuros');
             const containerPassados = document.getElementById('lista-atendimentos-passados');
             
             fetch(`${API_URL}/api/relatorios/ficha_atendimentos/${pacienteId}`)
                 .then(response => response.json())
                 .then(data => {
-                    containerFuturos.innerHTML = ''; // Limpa o "Carregando..."
-                    containerPassados.innerHTML = ''; // Limpa o "Carregando..."
+                    containerFuturos.innerHTML = ''; 
+                    containerPassados.innerHTML = ''; 
                     
                     let achouFuturo = false;
                     let achouPassado = false;
@@ -117,49 +117,65 @@
                         card.className = 'card-paciente';
                         const dataFormatada = dataAtendimento.toLocaleString('pt-BR');
                         
+                    // ... dentro do loop forEach ...
+                        let corStatus = '#6c757d'; // Cinza padrão
+                        if (atendimento.status === 'Agendado') corStatus = '#007bff'; // Azul
+                        if (atendimento.status === 'Em Atendimento') corStatus = '#ffc107'; // Amarelo
+                        if (atendimento.status === 'Finalizado') corStatus = '#28a745'; // Verde
+                        if (atendimento.status === 'Cancelado') corStatus = '#dc3545'; // Vermelho
+
                         card.innerHTML = `
+                            <div style="float: right; background-color: ${corStatus}; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px;">
+                                ${atendimento.status || 'Agendado'}
+                            </div>
                             <strong>Data:</strong> ${dataFormatada}<br>
                             <strong>Médico:</strong> ${atendimento.NomeMedico} [${atendimento.Especialidade}]<br>
                             <strong>Observações:</strong> ${atendimento.observacoes}
                         `;
+                    // ... (continua com o botão cancelar)
                         
-                        // --- AQUI ESTÁ A LÓGICA DE SEPARAÇÃO ---
+                        // LÓGICA DE SEPARAÇÃO (COM O BOTÃO NOVO)
                         if (dataAtendimento >= agora) {
-                            // É FUTURO
+                            // === É FUTURO: Adiciona o botão de cancelar ===
+                            // Nota: Verifique se seu banco retorna 'id_atendimento' na procedure
+                            card.innerHTML += `
+                                <div style="margin-top: 10px; border-top: 1px solid #ccc; padding-top: 5px;">
+                                    <button onclick="cancelarConsulta(${atendimento.id_atendimento})" 
+                                            style="background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 13px;">
+                                        ❌ Cancelar Consulta
+                                    </button>
+                                </div>
+                            `;
+                            
                             containerFuturos.appendChild(card);
                             achouFuturo = true;
                         } else {
-                            // É PASSADO
+                            // === É PASSADO: Não tem botão ===
                             containerPassados.appendChild(card);
                             achouPassado = true;
                         }
                     });
 
                     // Mensagens de "Nenhum encontrado"
-                    if (!achouFuturo) {
-                        containerFuturos.innerHTML = '<p>Nenhum atendimento futuro agendado.</p>';
-                    }
-                    if (!achouPassado) {
-                        containerPassados.innerHTML = '<p>Nenhum atendimento anterior encontrado.</p>';
-                    }
+                    if (!achouFuturo) containerFuturos.innerHTML = '<p>Nenhum atendimento futuro agendado.</p>';
+                    if (!achouPassado) containerPassados.innerHTML = '<p>Nenhum atendimento anterior encontrado.</p>';
                     
-                    // Adiciona os botões de ação (só na seção de futuros)
+                    // Botões de ação extra (Agendar/Histórico)
                     const acoes = document.createElement('section');
                     acoes.className = 'acoes-rapidas';
                     acoes.innerHTML = `
                         <button id="btn-agendar-consulta" class="btn-submit">Agendar Nova Consulta</button>
-                        <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">Ver Histórico (Página Separada)</button>
+                        <button id="btn-ver-historico" class="btn-submit" style="background-image: linear-gradient(to right, #6c757d, #5a6268);">Ver Histórico Completo</button>
                     `;
                     containerFuturos.appendChild(acoes);
                     
-                    // Re-ativa os botões do dashboard.js
+                    // Re-ativa os listeners dos botões extras
                     document.getElementById('btn-agendar-consulta').addEventListener('click', () => window.location.href = 'agendar_consulta.html');
                     document.getElementById('btn-ver-historico').addEventListener('click', () => window.location.href = 'historico_atendimentos.html');
                 })
                 .catch(error => {
                     console.error('Erro ao buscar atendimentos:', error);
                     containerFuturos.innerHTML = '<p>Erro ao carregar atendimentos.</p>';
-                    containerPassados.innerHTML = '<p>Erro ao carregar histórico.</p>';
                 });
 
             // --- 3. Buscar Dados Pessoais (Sem mudança) ---

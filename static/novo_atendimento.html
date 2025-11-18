@@ -24,6 +24,10 @@
                 <button id="btn-buscar">Buscar</button>
             </div>
             <p id="status-busca" class="status"></p>
+            <div id="historico-paciente-container" style="display: none; background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #17a2b8;">
+    <h4 style="margin-top: 0; color: #17a2b8;">📜 Últimos Atendimentos:</h4>
+    <ul id="lista-historico-resumido" style="padding-left: 20px; color: #555; font-size: 14px;"></ul>
+</div>
 
             <label for="obs-atendimento">Observações da Consulta:</label>
             <textarea id="obs-atendimento" rows="5"></textarea>
@@ -102,9 +106,32 @@
                         return response.json();
                     })
                     .then(paciente => {
-                        pacienteEncontrado = paciente; // Salva o objeto do paciente
-                        statusBusca.textContent = `Paciente encontrado: ${paciente.nome}`;
-                        statusBusca.className = "status ok";
+    pacienteEncontrado = paciente; 
+    statusBusca.textContent = `Paciente encontrado: ${paciente.nome}`;
+    statusBusca.className = "status ok";
+
+    // --- NOVO CÓDIGO: Buscar Histórico ---
+    const divHistorico = document.getElementById('historico-paciente-container');
+    const listaHistorico = document.getElementById('lista-historico-resumido');
+    
+    fetch(`${API_URL}/api/pacientes/${paciente.id_paciente}/historico_resumido`)
+        .then(res => res.json())
+        .then(historico => {
+            listaHistorico.innerHTML = ''; // Limpa anterior
+            
+            if (historico.length > 0) {
+                divHistorico.style.display = 'block'; // Mostra a caixa
+                historico.forEach(item => {
+                    const data = new Date(item.data_atendimento).toLocaleDateString('pt-BR');
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${data}</strong> (${item.Especialidade}): ${item.observacoes}`;
+                    listaHistorico.appendChild(li);
+                });
+            } else {
+                divHistorico.style.display = 'none'; // Esconde se não tiver nada
+            }
+        });
+
                     })
                     .catch(error => {
                         pacienteEncontrado = null;

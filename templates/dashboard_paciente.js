@@ -44,3 +44,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 );
+
+async function cancelarConsulta(idAtendimento) {
+    if (!idAtendimento) {
+        alert("Erro: ID do atendimento não encontrado.");
+        return;
+    }
+    
+    if (!confirm("Tem certeza que deseja cancelar esta consulta? Essa ação não pode ser desfeita.")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/atendimentos/${idAtendimento}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        alert(data.message);
+        
+        if (response.ok) {
+            window.location.reload(); // Recarrega a página para sumir com o card
+        }
+    } catch (error) {
+        console.error("Erro ao cancelar:", error);
+        alert("Erro de conexão ao tentar cancelar.");
+    }
+}
