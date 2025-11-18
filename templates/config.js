@@ -1,1 +1,1 @@
-window.API_URL = 'http://172.20.14.138:5000';
+window.API_URL = 'http://192.168.1.14:5000';
