@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-=======
-// templates/gerenciar_convenios.js
 
-// ⚠️ MUDE AQUI SE O IP MUDAR
-const API_URL = 'http://192.168.1.14:5000'; 
-
->>>>>>> 9a20be09c85f1ddcd529a29c3290926e17c278b1
 document.addEventListener('DOMContentLoaded', () => {
     fetch(API_URL + "/api/gerenciar_convenios")
 

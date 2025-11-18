@@ -40,4 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '../static/gerenciar_convenios.html'; 
         });
     }
+
+    // --- Botão Gerenciar Especialidades ---
+    const btnGerEspecialidade = document.getElementById('btn-gerenciar-especialidades');
+    if (btnGerEspecialidade) {
+        btnGerEspecialidade.addEventListener('click', () => {
+            // Página que você acabou de criar
+            window.location.href = '../static/gerenciar_especialidade.html'; 
+        });
+    }
 });
