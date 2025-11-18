@@ -157,13 +157,15 @@ th {
 }
 
 .btn-acao {
-    padding: 6px 12px;
+    padding: 10px 15px;
     border: none;
+    outline: none;
     border-radius: 5px;
-    color: white;
-    font-size: 14px;
+    background-color: #11349b9c;
     cursor: pointer;
-    text-decoration: none;
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
     transition: background-color 0.3s;
 }
 
