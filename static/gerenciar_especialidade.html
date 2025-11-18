@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Especialidades</title>
-    <link rel="stylesheet" href="../templates/gerenciar_especialidades.css"> 
-    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Especialidades</title>
+    <link rel="stylesheet" href="../templates/gerenciar_especialidades.css"> 
+    <link rel="shortcut icon" href="../imagens/ico.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="dashboard-container">
-                <div class="header-admin">
-            <h2>Gerenciar Especialidades</h2>
-                        <a href="dashboard_admin.html" class="btn-voltar">Voltar</a>
-        </div>        
-        
-        <div class="content">
-            
-                        <section class="dashboard-section">
+    <div class="dashboard-container">
+
+        <div class="header-admin">
+            <h2>Gerenciar Especialidades</h2>
+            <a href="dashboard_admin.html" class="btn-voltar">Voltar</a>
+        </div>
+
+        <div class="content">
+
+            <section class="form-section">
                 <fieldset>
                     <legend>Adicionar Nova Especialidade</legend>
+
                     <form id="form-add-especialidade" class="form-add">
-                        
                         <div class="input_box" style="margin-bottom: 20px;">
                             <br>
-                            <label for="nome-especialidade" class="label_input">Nome da Especialidade:</label>
-                            <input type="text" id="nome-especialidade" class="input_user" required>
-                            
+
+                            <label for="nome-especialidade">Nome da Especialidade:</label>
+
+                            <input type="text" id="nome-especialidade" class="input_user" required>
+
                         </div>
 
-                    <button type="submit" class="submit" style="width: 100%; margin-top: 10px;">Salvar</button>
-                </form>
+                        
+                        <button type="submit" class="btn-adicionar" style="width: 100%; margin-top: 10px;">
+                            Salvar
+                        </button>
+
+                    </form>
                 </fieldset>
-            </section>
-                        <section class="dashboard-section">
-                <h2>Especialidades Atuais</h2>
-                <div id="lista-especialidades">
-                    <p>Carregando...</p>
-                </div>
-            </section>      
-                       
-        </div>
-    </div>
+            </section>
+
+            <section class="lista-section">
+                <h2>Especialidades Atuais</h2>
+
+                <div id="lista-especialidades">
+                    <p>Carregando...</p>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
 <script src="../templates/config.js"></script>
 <script src="../templates/gerenciar_especialidades.js"></script>
 </body>
