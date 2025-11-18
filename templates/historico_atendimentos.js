@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+const API_URL = 'http://192.168.1.14:5000'; // ⚠️ MUDE SE O IP MUDAR
+>>>>>>> 9a20be09c85f1ddcd529a29c3290926e17c278b1
 
         document.addEventListener('DOMContentLoaded', function() {
             fetch(API_URL + "/api/historico_atendimentos")

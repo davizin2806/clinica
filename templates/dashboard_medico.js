@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 fetch(API_URL + "/api/dashbord_medico")
+=======
+// templates/dashboard_medico.js
+
+// ⚠️ MUDE AQUI SE O IP MUDAR
+const API_URL = 'http://192.168.1.14:5000'; 
+>>>>>>> 9a20be09c85f1ddcd529a29c3290926e17c278b1
 let todosPacientes = []; // Cache para o filtro
 
 /*Função de Logout (desconectar)*/
 function logout() {
-    localStorage.setItem('tipo_usuario', 'MEDICO'); // Limpa tudo salvo
+    localStorage.clear(); // Limpa tudo salvo
     alert('Você foi desconectado.');
     window.location.href = '../index.html'; // Redireciona para o login
 }

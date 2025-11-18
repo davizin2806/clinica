@@ -11,11 +11,19 @@ async function validarLogin() {
   }
 
   try {
+<<<<<<< HEAD
   const resposta = await fetch(`${API_URL}/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, senha })
 });
+=======
+    const resposta = await fetch('http://192.168.1.14:5000/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+>>>>>>> 9a20be09c85f1ddcd529a29c3290926e17c278b1
 
     const resultado = await resposta.json();
 

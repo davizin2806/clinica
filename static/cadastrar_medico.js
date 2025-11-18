@@ -1,5 +1,5 @@
 // Use 127.0.0.1 para evitar erros se o IP da rede mudar
-const API_URL = 'http://172.20.14.138:5000'; 
+const API_URL = 'http://192.168.1.14:5000'; 
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Iniciando carregamento de especialidades...");
